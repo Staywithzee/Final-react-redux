@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import Lenis from 'lenis';
 
+// Shared singleton so ScrollToTop can access it
+export let lenisInstance = null;
+
 export function useSmoothScroll() {
   useEffect(() => {
     const lenis = new Lenis({
@@ -8,11 +11,18 @@ export function useSmoothScroll() {
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     });
+
+    lenisInstance = lenis;
+
     function raf(time) {
       lenis.raf(time);
       requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
-    return () => lenis.destroy();
+
+    return () => {
+      lenis.destroy();
+      lenisInstance = null;
+    };
   }, []);
 }
