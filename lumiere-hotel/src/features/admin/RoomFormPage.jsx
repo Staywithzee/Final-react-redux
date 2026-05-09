@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import {
@@ -23,25 +23,17 @@ const emptyForm = {
   available: true,
 };
 
-export default function RoomFormPage() {
-  const { id } = useParams();
+// Renders the actual form once data is available
+function FormContent({ existingRoom, isEdit }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isEdit = Boolean(id);
-
-  const { data: existingRoom, isLoading, isError } = useGetRoomByIdQuery(id, {
-    skip: !isEdit,
-  });
 
   const [addRoom, { isLoading: isAdding }] = useAddRoomMutation();
   const [updateRoom, { isLoading: isUpdating }] = useUpdateRoomMutation();
 
-  const [form, setForm] = useState(emptyForm);
-  const [errors, setErrors] = useState({});
-
-  useEffect(() => {
-    if (isEdit && existingRoom) {
-      setForm({
+  const [form, setForm] = useState(() => {
+    if (existingRoom) {
+      return {
         name: existingRoom.name ?? '',
         category: existingRoom.category ?? 'Standard',
         pricePerNight: existingRoom.pricePerNight ?? '',
@@ -50,9 +42,12 @@ export default function RoomFormPage() {
         description: existingRoom.description ?? '',
         imageUrl: existingRoom.imageUrl ?? '',
         available: existingRoom.available ?? true,
-      });
+      };
     }
-  }, [isEdit, existingRoom]);
+    return emptyForm;
+  });
+
+  const [errors, setErrors] = useState({});
 
   const validate = () => {
     const newErrors = {};
@@ -87,12 +82,11 @@ export default function RoomFormPage() {
       pricePerNight: Number(form.pricePerNight),
       maxGuests: Number(form.maxGuests),
       size: Number(form.size),
-      amenities: form.amenities || [],
     };
 
     try {
       if (isEdit) {
-        await updateRoom({ id, ...payload }).unwrap();
+        await updateRoom({ id: existingRoom.id, ...payload }).unwrap();
         dispatch(showNotification({ message: 'Room updated successfully.', type: 'success' }));
       } else {
         await addRoom(payload).unwrap();
@@ -104,25 +98,154 @@ export default function RoomFormPage() {
     }
   };
 
-  if (isEdit && isLoading) {
-    return (
-      <div className={styles.page}>
-        <div className={styles.loadingWrap}>
-          <div className={styles.spinner} />
+  const isPending = isAdding || isUpdating;
+
+  return (
+    <form className={styles.form} onSubmit={handleSubmit} noValidate>
+      <div className={styles.grid}>
+        <div className={styles.fieldGroup}>
+          <label className={styles.label} htmlFor="name">Room Name *</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            className={`${styles.input} ${errors.name ? styles.inputError : ''}`}
+            value={form.name}
+            onChange={handleChange}
+            placeholder="e.g. Deluxe Garden Suite"
+          />
+          {errors.name && <span className={styles.errorMsg}>{errors.name}</span>}
+        </div>
+
+        <div className={styles.fieldGroup}>
+          <label className={styles.label} htmlFor="category">Category *</label>
+          <select
+            id="category"
+            name="category"
+            className={`${styles.input} ${errors.category ? styles.inputError : ''}`}
+            value={form.category}
+            onChange={handleChange}
+          >
+            {CATEGORIES.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+          {errors.category && <span className={styles.errorMsg}>{errors.category}</span>}
+        </div>
+
+        <div className={styles.fieldGroup}>
+          <label className={styles.label} htmlFor="pricePerNight">Price per Night (USD) *</label>
+          <input
+            id="pricePerNight"
+            name="pricePerNight"
+            type="number"
+            min="1"
+            className={`${styles.input} ${errors.pricePerNight ? styles.inputError : ''}`}
+            value={form.pricePerNight}
+            onChange={handleChange}
+            placeholder="e.g. 4500"
+          />
+          {errors.pricePerNight && (
+            <span className={styles.errorMsg}>{errors.pricePerNight}</span>
+          )}
+        </div>
+
+        <div className={styles.fieldGroup}>
+          <label className={styles.label} htmlFor="maxGuests">Max Guests *</label>
+          <input
+            id="maxGuests"
+            name="maxGuests"
+            type="number"
+            min="1"
+            className={`${styles.input} ${errors.maxGuests ? styles.inputError : ''}`}
+            value={form.maxGuests}
+            onChange={handleChange}
+            placeholder="e.g. 2"
+          />
+          {errors.maxGuests && <span className={styles.errorMsg}>{errors.maxGuests}</span>}
+        </div>
+
+        <div className={styles.fieldGroup}>
+          <label className={styles.label} htmlFor="size">Size (m²)</label>
+          <input
+            id="size"
+            name="size"
+            type="number"
+            min="0"
+            className={styles.input}
+            value={form.size}
+            onChange={handleChange}
+            placeholder="e.g. 55"
+          />
+        </div>
+
+        <div className={styles.fieldGroup}>
+          <label className={styles.label} htmlFor="imageUrl">Image URL</label>
+          <input
+            id="imageUrl"
+            name="imageUrl"
+            type="url"
+            className={styles.input}
+            value={form.imageUrl}
+            onChange={handleChange}
+            placeholder="https://images.unsplash.com/..."
+          />
         </div>
       </div>
-    );
-  }
 
-  if (isEdit && isError) {
-    return (
-      <div className={styles.page}>
-        <ErrorMessage message="Room not found." />
+      <div className={styles.fieldGroup}>
+        <label className={styles.label} htmlFor="description">Description</label>
+        <textarea
+          id="description"
+          name="description"
+          className={styles.textarea}
+          value={form.description}
+          onChange={handleChange}
+          placeholder="Describe the room, its ambiance, and what makes it special..."
+          rows={4}
+        />
       </div>
-    );
-  }
 
-  const isPending = isAdding || isUpdating;
+      <div className={styles.checkboxGroup}>
+        <input
+          id="available"
+          name="available"
+          type="checkbox"
+          className={styles.checkbox}
+          checked={form.available}
+          onChange={handleChange}
+        />
+        <label htmlFor="available" className={styles.checkboxLabel}>
+          Room is available for booking
+        </label>
+      </div>
+
+      <div className={styles.formActions}>
+        <button
+          type="button"
+          className={styles.cancelBtn}
+          onClick={() => navigate(-1)}
+          disabled={isPending}
+        >
+          Cancel
+        </button>
+        <button type="submit" className={styles.submitBtn} disabled={isPending}>
+          {isPending ? 'Saving...' : isEdit ? 'Save Changes' : 'Add Room'}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+export default function RoomFormPage() {
+  const { id } = useParams();
+  const isEdit = Boolean(id);
+
+  const { data: existingRoom, isLoading, isError } = useGetRoomByIdQuery(id, {
+    skip: !isEdit,
+  });
 
   return (
     <div className={styles.page}>
@@ -132,141 +255,20 @@ export default function RoomFormPage() {
           <h1 className={styles.title}>{isEdit ? 'Edit Room' : 'Add New Room'}</h1>
         </div>
 
-        <form className={styles.form} onSubmit={handleSubmit} noValidate>
-          <div className={styles.grid}>
-            <div className={styles.fieldGroup}>
-              <label className={styles.label} htmlFor="name">Room Name *</label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                className={`${styles.input} ${errors.name ? styles.inputError : ''}`}
-                value={form.name}
-                onChange={handleChange}
-                placeholder="e.g. Deluxe Garden Suite"
-              />
-              {errors.name && <span className={styles.errorMsg}>{errors.name}</span>}
-            </div>
-
-            <div className={styles.fieldGroup}>
-              <label className={styles.label} htmlFor="category">Category *</label>
-              <select
-                id="category"
-                name="category"
-                className={`${styles.input} ${errors.category ? styles.inputError : ''}`}
-                value={form.category}
-                onChange={handleChange}
-              >
-                {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-              {errors.category && <span className={styles.errorMsg}>{errors.category}</span>}
-            </div>
-
-            <div className={styles.fieldGroup}>
-              <label className={styles.label} htmlFor="pricePerNight">Price per Night (USD) *</label>
-              <input
-                id="pricePerNight"
-                name="pricePerNight"
-                type="number"
-                min="1"
-                className={`${styles.input} ${errors.pricePerNight ? styles.inputError : ''}`}
-                value={form.pricePerNight}
-                onChange={handleChange}
-                placeholder="e.g. 4500"
-              />
-              {errors.pricePerNight && (
-                <span className={styles.errorMsg}>{errors.pricePerNight}</span>
-              )}
-            </div>
-
-            <div className={styles.fieldGroup}>
-              <label className={styles.label} htmlFor="maxGuests">Max Guests *</label>
-              <input
-                id="maxGuests"
-                name="maxGuests"
-                type="number"
-                min="1"
-                className={`${styles.input} ${errors.maxGuests ? styles.inputError : ''}`}
-                value={form.maxGuests}
-                onChange={handleChange}
-                placeholder="e.g. 2"
-              />
-              {errors.maxGuests && <span className={styles.errorMsg}>{errors.maxGuests}</span>}
-            </div>
-
-            <div className={styles.fieldGroup}>
-              <label className={styles.label} htmlFor="size">Size (m²)</label>
-              <input
-                id="size"
-                name="size"
-                type="number"
-                min="0"
-                className={styles.input}
-                value={form.size}
-                onChange={handleChange}
-                placeholder="e.g. 55"
-              />
-            </div>
-
-            <div className={styles.fieldGroup}>
-              <label className={styles.label} htmlFor="imageUrl">Image URL</label>
-              <input
-                id="imageUrl"
-                name="imageUrl"
-                type="url"
-                className={styles.input}
-                value={form.imageUrl}
-                onChange={handleChange}
-                placeholder="https://images.unsplash.com/..."
-              />
-            </div>
+        {isEdit && isLoading ? (
+          <div className={styles.loadingWrap}>
+            <div className={styles.spinner} />
           </div>
-
-          <div className={styles.fieldGroup}>
-            <label className={styles.label} htmlFor="description">Description</label>
-            <textarea
-              id="description"
-              name="description"
-              className={styles.textarea}
-              value={form.description}
-              onChange={handleChange}
-              placeholder="Describe the room, its ambiance, and what makes it special..."
-              rows={4}
-            />
-          </div>
-
-          <div className={styles.checkboxGroup}>
-            <input
-              id="available"
-              name="available"
-              type="checkbox"
-              className={styles.checkbox}
-              checked={form.available}
-              onChange={handleChange}
-            />
-            <label htmlFor="available" className={styles.checkboxLabel}>
-              Room is available for booking
-            </label>
-          </div>
-
-          <div className={styles.formActions}>
-            <button
-              type="button"
-              className={styles.cancelBtn}
-              onClick={() => navigate(-1)}
-              disabled={isPending}
-            >
-              Cancel
-            </button>
-            <button type="submit" className={styles.submitBtn} disabled={isPending}>
-              {isPending ? 'Saving...' : isEdit ? 'Save Changes' : 'Add Room'}
-            </button>
-          </div>
-        </form>
+        ) : isEdit && isError ? (
+          <ErrorMessage message="Room not found." />
+        ) : (
+          // Key forces remount so useState initializer picks up existingRoom
+          <FormContent
+            key={existingRoom?.id ?? 'new'}
+            existingRoom={isEdit ? existingRoom : null}
+            isEdit={isEdit}
+          />
+        )}
       </div>
     </div>
   );

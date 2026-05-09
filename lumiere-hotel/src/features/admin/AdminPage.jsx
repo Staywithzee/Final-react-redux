@@ -64,7 +64,7 @@ export default function AdminPage() {
               </tr>
             </thead>
             <tbody>
-              {rooms.map((room) => (
+              {(rooms ?? []).map((room) => (
                 <tr key={room.id} className={styles.tr}>
                   <td className={styles.td}>
                     <div className={styles.roomCell}>
