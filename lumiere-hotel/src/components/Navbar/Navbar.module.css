@@ -52,6 +52,19 @@
   color: var(--charcoal);
 }
 
+/* White text when navbar is transparent (over dark hero) */
+.light {
+  color: rgba(250, 247, 242, 0.9) !important;
+}
+
+.light:hover {
+  color: #fff !important;
+}
+
+.light.cta {
+  border-color: rgba(250, 247, 242, 0.6) !important;
+}
+
 .active {
   color: var(--charcoal);
 }

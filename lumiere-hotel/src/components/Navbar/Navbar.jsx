@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import styles from './Navbar.module.css';
 
@@ -13,7 +13,11 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { scrollY } = useScroll();
+
+  // Track scrolled state for text color switching
+  scrollY.on('change', (v) => setScrolled(v > 60));
 
   const navBg = useTransform(
     scrollY,
@@ -26,13 +30,16 @@ export default function Navbar() {
     ['0 0 0 rgba(0,0,0,0)', '0 1px 20px rgba(44,40,32,0.08)']
   );
 
+  const { pathname } = useLocation();
+  const textClass = !scrolled && pathname === '/dining' ? styles.light : '';
+
   return (
     <motion.header
       className={styles.navbar}
       style={{ backgroundColor: navBg, boxShadow: navShadow }}
     >
       <div className={styles.inner}>
-        <Link to="/" className={styles.logo}>
+        <Link to="/" className={`${styles.logo} ${textClass}`}>
           LUMIÈRE
         </Link>
 
@@ -42,7 +49,7 @@ export default function Navbar() {
               key={to}
               to={to}
               end={end}
-              className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`}
+              className={({ isActive }) => `${styles.link} ${textClass} ${isActive ? styles.active : ''}`}
               onClick={() => setMenuOpen(false)}
             >
               {({ isActive }) => (
@@ -60,7 +67,7 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <Link to="/booking" className={styles.cta} onClick={() => setMenuOpen(false)}>
+        <Link to="/booking" className={`${styles.cta} ${textClass}`} onClick={() => setMenuOpen(false)}>
           Book Now
         </Link>
 
