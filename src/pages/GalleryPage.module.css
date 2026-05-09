@@ -1,0 +1,263 @@
+.page {
+  min-height: 100vh;
+  background: var(--warm-white);
+  padding: 120px 40px 80px;
+}
+
+.header {
+  max-width: 640px;
+  margin: 0 auto 48px;
+  text-align: center;
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  margin: 0 0 12px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  color: var(--charcoal);
+  margin: 0 0 12px;
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.filterBtn {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--charcoal-mid);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filterBtn:hover {
+  border-color: var(--gold);
+  color: var(--charcoal);
+}
+
+.filterActive {
+  background: var(--charcoal);
+  border-color: var(--charcoal);
+  color: var(--cream);
+}
+
+.filterActive:hover {
+  background: var(--charcoal);
+  border-color: var(--charcoal);
+  color: var(--cream);
+}
+
+.grid {
+  max-width: 1280px;
+  margin: 0 auto;
+  columns: 3;
+  column-gap: 16px;
+}
+
+.item {
+  display: block;
+  width: 100%;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+  break-inside: avoid;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.img {
+  width: 100%;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.item:hover .img {
+  transform: scale(1.04);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(44, 40, 32, 0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 20px;
+  transition: background 0.3s;
+  gap: 4px;
+}
+
+.item:hover .overlay {
+  background: rgba(44, 40, 32, 0.45);
+}
+
+.overlayText {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--warm-white);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.overlayCategory {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0;
+  transition: opacity 0.3s 0.05s;
+}
+
+.item:hover .overlayText,
+.item:hover .overlayCategory {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* LIGHTBOX */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(44, 40, 32, 0.92);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.lightboxInner {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lightboxClose {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
+  color: var(--cream);
+  font-size: 2rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.lightboxClose:hover {
+  color: var(--gold);
+}
+
+.lightboxImg {
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+  display: block;
+}
+
+.lightboxCaption {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.lightboxAlt {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  color: var(--cream);
+}
+
+.lightboxCat {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.lightboxNav {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.navBtn {
+  pointer-events: all;
+  background: rgba(250, 247, 242, 0.1);
+  border: 1px solid rgba(250, 247, 242, 0.2);
+  color: var(--cream);
+  font-size: 2rem;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.navBtn:hover {
+  background: rgba(250, 247, 242, 0.2);
+}
+
+@media (max-width: 1024px) {
+  .grid {
+    columns: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .page {
+    padding: 100px 24px 60px;
+  }
+
+  .grid {
+    columns: 1;
+  }
+}
