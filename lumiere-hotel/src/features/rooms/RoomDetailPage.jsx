@@ -3,9 +3,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useGetRoomByIdQuery } from './roomsApi';
 import { selectRoom, setDates, setGuests } from '../booking/bookingSlice';
 import { selectTotalNights, selectTotalPrice } from '../booking/bookingSelectors';
-import SkeletonCard from '../../components/SkeletonCard/SkeletonCard';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import styles from './RoomDetailPage.module.css';
+
+const amenityIcons = {
+  WiFi: '◈', Bathtub: '◎', Minibar: '◇', 'Sea View': '◉',
+  Pool: '○', Spa: '✦', Balcony: '□', Breakfast: '❧',
+  Gym: '△', Parking: '◻', 'Air Conditioning': '❄', Butler: '✧',
+};
+
+function formatPrice(n) {
+  return Number(n).toLocaleString('en-US', {
+    style: 'currency', currency: 'USD', maximumFractionDigits: 0,
+  });
+}
 
 export default function RoomDetailPage() {
   const { id } = useParams();
@@ -16,7 +27,6 @@ export default function RoomDetailPage() {
   const booking = useSelector((state) => state.booking);
   const totalNights = useSelector(selectTotalNights);
   const totalPrice = useSelector(selectTotalPrice);
-
   const today = new Date().toISOString().split('T')[0];
 
   const handleBook = () => {
@@ -25,102 +35,132 @@ export default function RoomDetailPage() {
     navigate('/booking');
   };
 
+  /* ── Loading ── */
   if (isLoading) {
     return (
-      <div className={styles.page}>
-        <div className={styles.skeletonGrid}>
-          <div className={`${styles.skeletonImg} ${styles.shimmer}`} />
-          <div className={styles.skeletonInfo}>
-            <SkeletonCard />
+      <div className={styles.skeletonPage}>
+        <div className={styles.skeletonHero} />
+        <div className={styles.skeletonBody}>
+          <div className={styles.skeletonContent}>
+            {[80, 50, 100, 70, 90].map((w, i) => (
+              <div key={i} className={styles.skeletonLine} style={{ width: `${w}%` }} />
+            ))}
           </div>
+          <div className={styles.skeletonWidget} />
         </div>
       </div>
     );
   }
 
-  if (isError) {
-    return (
-      <div className={styles.page}>
-        <ErrorMessage message={error?.data?.message ?? 'Room not found.'} />
-      </div>
-    );
-  }
-
+  if (isError) return <div className={styles.errorWrap}><ErrorMessage message={error?.data?.message ?? 'Room not found.'} /></div>;
   if (!room) return null;
+
+  const amenityList = Array.isArray(room.amenities)
+    ? room.amenities
+    : String(room.amenities || '').split(',').map((a) => a.trim()).filter(Boolean);
 
   return (
     <div className={styles.page}>
-      <button className={styles.back} onClick={() => navigate('/rooms')}>
-        ← Back to Rooms
-      </button>
 
-      <div className={styles.layout}>
-        {/* LEFT: Main content */}
-        <div className={styles.main}>
-          <div className={styles.imageWrap}>
-            <img src={room.imageUrl} alt={room.name} className={styles.image} />
-            {!room.available && (
-              <div className={styles.unavailableBanner}>Currently Unavailable</div>
-            )}
-          </div>
+      {/* ── HERO IMAGE ── */}
+      <div className={styles.hero}>
+        <img src={room.imageUrl} alt={room.name} className={styles.heroImg} />
+        <div className={styles.heroGradient} />
 
-          <div className={styles.content}>
-            <div className={styles.contentTop}>
-              <span className={styles.category}>{room.category}</span>
-              <h1 className={styles.name}>{room.name}</h1>
-              <div className={styles.metaRow}>
-                <span className={styles.metaItem}>
-                  <strong>{room.maxGuests}</strong> Guests
-                </span>
-                <span className={styles.metaDot}>·</span>
-                <span className={styles.metaItem}>
-                  <strong>{room.size}</strong> m²
-                </span>
-              </div>
-            </div>
+        {/* Back button */}
+        <button className={styles.back} onClick={() => navigate('/rooms')}>
+          ← Rooms
+        </button>
 
-            <p className={styles.description}>{room.description}</p>
+        {/* Unavailable ribbon */}
+        {!room.available && (
+          <div className={styles.unavailableRibbon}>Currently Unavailable</div>
+        )}
 
-            <div className={styles.amenitiesSection}>
-              <h3 className={styles.amenitiesTitle}>Amenities</h3>
-              <div className={styles.amenities}>
-                {Array.isArray(room.amenities)
-                  ? room.amenities.map((a) => (
-                      <span key={a} className={styles.chip}>
-                        {a}
-                      </span>
-                    ))
-                  : String(room.amenities)
-                      .split(',')
-                      .map((a) => (
-                        <span key={a} className={styles.chip}>
-                          {a.trim()}
-                        </span>
-                      ))}
-              </div>
-            </div>
+        {/* Room identity overlay */}
+        <div className={styles.heroInfo}>
+          <span className={styles.heroCat}>{room.category}</span>
+          <h1 className={styles.heroName}>{room.name}</h1>
+          <div className={styles.heroMeta}>
+            <span>{room.maxGuests} Guests</span>
+            <span className={styles.heroDot}>·</span>
+            <span>{room.size} m²</span>
+            <span className={styles.heroDot}>·</span>
+            <span>{formatPrice(room.pricePerNight)} / night</span>
           </div>
         </div>
+      </div>
 
-        {/* RIGHT: Booking widget */}
-        <div className={styles.widget}>
-          <div className={styles.widgetHeader}>
-            <span className={styles.widgetPrice}>
-              {Number(room.pricePerNight).toLocaleString('en-US', {
-                style: 'currency',
-                currency: 'USD',
-                maximumFractionDigits: 0,
-              })}
-            </span>
-            <span className={styles.widgetPer}>/night</span>
+      {/* ── BODY ── */}
+      <div className={styles.body}>
+
+        {/* LEFT: Details */}
+        <div className={styles.details}>
+
+          {/* Description */}
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>About This Room</h2>
+            <p className={styles.description}>{room.description}</p>
+          </section>
+
+          <div className={styles.divider} />
+
+          {/* Amenities */}
+          {amenityList.length > 0 && (
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>Amenities</h2>
+              <div className={styles.amenities}>
+                {amenityList.map((a) => (
+                  <div key={a} className={styles.amenityItem}>
+                    <span className={styles.amenityIcon}>
+                      {amenityIcons[a] || '·'}
+                    </span>
+                    <span className={styles.amenityName}>{a}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <div className={styles.divider} />
+
+          {/* Policies */}
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>Policies</h2>
+            <div className={styles.policies}>
+              <div className={styles.policy}>
+                <span className={styles.policyLabel}>Check-in</span>
+                <span className={styles.policyVal}>From 15:00</span>
+              </div>
+              <div className={styles.policy}>
+                <span className={styles.policyLabel}>Check-out</span>
+                <span className={styles.policyVal}>Until 12:00</span>
+              </div>
+              <div className={styles.policy}>
+                <span className={styles.policyLabel}>Cancellation</span>
+                <span className={styles.policyVal}>Free up to 48h before arrival</span>
+              </div>
+              <div className={styles.policy}>
+                <span className={styles.policyLabel}>Pets</span>
+                <span className={styles.policyVal}>Not permitted</span>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        {/* RIGHT: Booking Widget */}
+        <aside className={styles.widget}>
+          <div className={styles.widgetPrice}>
+            <span className={styles.priceAmt}>{formatPrice(room.pricePerNight)}</span>
+            <span className={styles.pricePer}>per night</span>
           </div>
 
-          <div className={styles.widgetFields}>
-            <div className={styles.fieldGroup}>
-              <label className={styles.label}>Check-In</label>
+          <div className={styles.dateRow}>
+            <div className={styles.dateField}>
+              <label className={styles.fieldLabel}>Check-In</label>
               <input
                 type="date"
-                className={styles.input}
+                className={styles.fieldInput}
                 min={today}
                 value={booking.checkIn}
                 onChange={(e) =>
@@ -128,11 +168,12 @@ export default function RoomDetailPage() {
                 }
               />
             </div>
-            <div className={styles.fieldGroup}>
-              <label className={styles.label}>Check-Out</label>
+            <div className={styles.dateDivider} />
+            <div className={styles.dateField}>
+              <label className={styles.fieldLabel}>Check-Out</label>
               <input
                 type="date"
-                className={styles.input}
+                className={styles.fieldInput}
                 min={booking.checkIn || today}
                 value={booking.checkOut}
                 onChange={(e) =>
@@ -140,62 +181,42 @@ export default function RoomDetailPage() {
                 }
               />
             </div>
-            <div className={styles.fieldGroup}>
-              <label className={styles.label}>Guests</label>
-              <select
-                className={styles.input}
-                value={booking.guests}
-                onChange={(e) => dispatch(setGuests(Number(e.target.value)))}
-              >
-                {[...Array(room.maxGuests)].map((_, i) => (
-                  <option key={i + 1} value={i + 1}>
-                    {i + 1} {i === 0 ? 'Guest' : 'Guests'}
-                  </option>
-                ))}
-              </select>
-            </div>
+          </div>
+
+          <div className={styles.guestsField}>
+            <label className={styles.fieldLabel}>Guests</label>
+            <select
+              className={styles.fieldInput}
+              value={booking.guests}
+              onChange={(e) => dispatch(setGuests(Number(e.target.value)))}
+            >
+              {[...Array(Math.max(1, Number(room.maxGuests) || 1))].map((_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  {i + 1} {i === 0 ? 'Guest' : 'Guests'}
+                </option>
+              ))}
+            </select>
           </div>
 
           {totalNights > 0 && (
-            <div className={styles.summary}>
-              <div className={styles.summaryRow}>
-                <span>
-                  {Number(room.pricePerNight).toLocaleString('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                    maximumFractionDigits: 0,
-                  })}{' '}
-                  × {totalNights} {totalNights === 1 ? 'night' : 'nights'}
-                </span>
-                <span>
-                  {totalPrice.toLocaleString('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                    maximumFractionDigits: 0,
-                  })}
-                </span>
+            <div className={styles.priceBreakdown}>
+              <div className={styles.breakdownRow}>
+                <span>{formatPrice(room.pricePerNight)} × {totalNights} {totalNights === 1 ? 'night' : 'nights'}</span>
+                <span>{formatPrice(totalPrice)}</span>
               </div>
-              <div className={`${styles.summaryRow} ${styles.totalRow}`}>
+              <div className={`${styles.breakdownRow} ${styles.breakdownTotal}`}>
                 <span>Total</span>
-                <span>
-                  {totalPrice.toLocaleString('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                    maximumFractionDigits: 0,
-                  })}
-                </span>
+                <span>{formatPrice(totalPrice)}</span>
               </div>
             </div>
           )}
 
-          <button
-            className={styles.bookBtn}
-            onClick={handleBook}
-            disabled={!room.available}
-          >
-            {room.available ? 'Book This Room' : 'Not Available'}
+          <button className={styles.bookBtn} onClick={handleBook} disabled={!room.available}>
+            {room.available ? 'Reserve This Room' : 'Currently Unavailable'}
           </button>
-        </div>
+
+          <p className={styles.widgetNote}>No charge until confirmation · Free cancellation</p>
+        </aside>
       </div>
     </div>
   );

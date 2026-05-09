@@ -93,8 +93,10 @@ function FormContent({ existingRoom, isEdit }) {
         dispatch(showNotification({ message: 'Room added successfully.', type: 'success' }));
       }
       navigate(-1);
-    } catch {
-      dispatch(showNotification({ message: 'Operation failed. Please try again.', type: 'error' }));
+    } catch (err) {
+      console.error('Add/Edit room error:', err);
+      const msg = err?.data?.message || err?.error || `Error ${err?.status ?? ''}`.trim();
+      dispatch(showNotification({ message: msg || 'Operation failed. Please try again.', type: 'error' }));
     }
   };
 
