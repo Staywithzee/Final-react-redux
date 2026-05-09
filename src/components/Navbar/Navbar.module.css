@@ -4,16 +4,6 @@
   left: 0;
   right: 0;
   z-index: 100;
-  transition: background 0.35s ease, box-shadow 0.35s ease;
-}
-
-.transparent {
-  background: transparent;
-}
-
-.scrolled {
-  background: var(--cream);
-  box-shadow: 0 2px 24px rgba(44, 40, 32, 0.08);
 }
 
 .inner {
@@ -54,32 +44,26 @@
   color: var(--charcoal-mid);
   text-decoration: none;
   position: relative;
-  padding-bottom: 3px;
+  padding-bottom: 4px;
   transition: color 0.2s;
-}
-
-.link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--gold);
-  transition: width 0.25s ease;
 }
 
 .link:hover {
   color: var(--charcoal);
 }
 
-.link:hover::after,
-.active::after {
-  width: 100%;
-}
-
 .active {
   color: var(--charcoal);
+}
+
+/* layoutId underline — framer-motion animates it between links */
+.underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--gold);
 }
 
 .cta {
@@ -116,7 +100,31 @@
   width: 24px;
   height: 1px;
   background: var(--charcoal);
-  transition: transform 0.25s, opacity 0.25s;
+}
+
+/* Mobile menu */
+.mobileMenu {
+  background: rgba(250, 247, 242, 0.98);
+  border-top: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.mobileLink {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--charcoal-mid);
+  text-decoration: none;
+  padding: 16px 40px;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s;
+}
+
+.mobileLink:hover,
+.mobileLink.active {
+  color: var(--charcoal);
 }
 
 @media (max-width: 768px) {
@@ -125,31 +133,6 @@
   }
 
   .links {
-    position: absolute;
-    top: 72px;
-    left: 0;
-    right: 0;
-    background: var(--cream);
-    flex-direction: column;
-    gap: 0;
-    padding: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-    border-top: 1px solid var(--border);
-  }
-
-  .links.open {
-    max-height: 400px;
-  }
-
-  .link {
-    padding: 16px 40px;
-    width: 100%;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .link::after {
     display: none;
   }
 

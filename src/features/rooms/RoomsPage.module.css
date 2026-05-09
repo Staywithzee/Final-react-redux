@@ -63,6 +63,19 @@
   color: var(--charcoal-mid);
   cursor: pointer;
   transition: all 0.2s;
+  position: relative;
+}
+
+.tabIndicator {
+  position: absolute;
+  inset: -1px;
+  background: var(--charcoal);
+  z-index: -1;
+}
+
+.filterLabel {
+  position: relative;
+  z-index: 1;
 }
 
 .filterBtn:hover {

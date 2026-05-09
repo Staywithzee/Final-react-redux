@@ -9,6 +9,7 @@ import {
   useMotionValue,
 } from 'framer-motion';
 import { useGetRoomsQuery } from '../features/rooms/roomsApi';
+import { PageWrapper } from '../components/PageWrapper/PageWrapper';
 import RoomCard from '../components/RoomCard/RoomCard';
 import SkeletonCard from '../components/SkeletonCard/SkeletonCard';
 import styles from './HomePage.module.css';
@@ -199,7 +200,7 @@ export default function HomePage() {
   const ctaInView = useInView(ctaRef, { once: true, margin: '-80px' });
 
   return (
-    <>
+    <PageWrapper>
       {/* Scroll progress bar */}
       <motion.div className={styles.progressBar} style={{ scaleX }} />
 
@@ -540,6 +541,6 @@ export default function HomePage() {
           </motion.div>
         </section>
       </motion.main>
-    </>
+    </PageWrapper>
   );
 }

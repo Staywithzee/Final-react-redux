@@ -163,6 +163,12 @@
 .fieldGroup {
   display: flex;
   flex-direction: column;
+  gap: 20px;
+}
+
+.fieldItem {
+  display: flex;
+  flex-direction: column;
   gap: 6px;
 }
 
