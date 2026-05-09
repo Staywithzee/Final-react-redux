@@ -1,0 +1,122 @@
+.footer {
+  background: var(--charcoal);
+  color: var(--cream);
+  padding-top: 72px;
+}
+
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 40px 56px;
+  display: flex;
+  gap: 80px;
+  align-items: flex-start;
+}
+
+.brand {
+  flex-shrink: 0;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  color: var(--cream);
+  display: block;
+  margin-bottom: 12px;
+}
+
+.tagline {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: rgba(250, 247, 242, 0.5);
+  margin: 0;
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+
+.cols {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.colTitle {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 8px;
+}
+
+.colLink {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: rgba(250, 247, 242, 0.65);
+  text-decoration: none;
+  transition: color 0.2s;
+  line-height: 1.6;
+}
+
+.colLink:hover {
+  color: var(--cream);
+}
+
+.colText {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: rgba(250, 247, 242, 0.65);
+  line-height: 1.6;
+}
+
+.bottom {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 40px;
+  border-top: 1px solid rgba(201, 169, 110, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: rgba(250, 247, 242, 0.4);
+}
+
+.adminLink {
+  color: rgba(250, 247, 242, 0.3);
+  text-decoration: none;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+
+.adminLink:hover {
+  color: var(--gold);
+}
+
+@media (max-width: 768px) {
+  .inner {
+    flex-direction: column;
+    gap: 40px;
+    padding: 0 24px 40px;
+  }
+
+  .cols {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bottom {
+    padding: 16px 24px;
+  }
+}

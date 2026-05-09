@@ -1,0 +1,268 @@
+.page {
+  min-height: 100vh;
+  background: var(--warm-white);
+}
+
+/* HERO */
+.hero {
+  position: relative;
+  height: 60vh;
+  min-height: 400px;
+  background: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=85')
+    center 40% / cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(44, 40, 32, 0.5);
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0;
+}
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: var(--warm-white);
+  margin: 0;
+}
+
+.heroSub {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-style: italic;
+  color: rgba(250, 247, 242, 0.8);
+  margin: 0;
+}
+
+/* INTRO */
+.intro {
+  background: var(--charcoal);
+  padding: 56px 40px;
+}
+
+.introInner {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.introText {
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+  font-style: italic;
+  font-weight: 300;
+  color: rgba(250, 247, 242, 0.75);
+  line-height: 1.9;
+  margin: 0;
+}
+
+/* RESTAURANTS */
+.restaurants {
+  padding: 96px 40px;
+}
+
+.restaurantsInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+}
+
+.restaurant {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 72px;
+  align-items: center;
+}
+
+.reversed {
+  direction: rtl;
+}
+
+.reversed > * {
+  direction: ltr;
+}
+
+.restImageWrap {
+  overflow: hidden;
+}
+
+.restImage {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.restImageWrap:hover .restImage {
+  transform: scale(1.04);
+}
+
+.restContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.restType {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  margin: 0;
+}
+
+.restName {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 400;
+  color: var(--charcoal);
+  margin: 0;
+}
+
+.restDesc {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.9;
+  margin: 0;
+}
+
+.restHours {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--charcoal-mid);
+  margin: 0;
+  font-style: italic;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  color: var(--charcoal-mid);
+  padding: 5px 12px;
+}
+
+.restMeta {
+  display: flex;
+  gap: 16px;
+}
+
+.dresscode {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.reserveBtn {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: none;
+  border: 1px solid var(--gold);
+  color: var(--charcoal);
+  padding: 12px 28px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  align-self: flex-start;
+  margin-top: 8px;
+}
+
+.reserveBtn:hover {
+  background: var(--gold);
+  color: var(--warm-white);
+}
+
+/* AMENITIES */
+.amenities {
+  background: var(--cream);
+  padding: 48px 40px;
+  border-top: 1px solid var(--border);
+}
+
+.amenitiesInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.amenityItem {
+  text-align: center;
+  padding: 24px;
+  border: 1px solid var(--border);
+}
+
+.amenityTitle {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--charcoal-mid);
+}
+
+@media (max-width: 1024px) {
+  .restaurant {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .reversed {
+    direction: ltr;
+  }
+
+  .amenitiesInner {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .restaurants {
+    padding: 60px 24px;
+  }
+
+  .amenities {
+    padding: 40px 24px;
+  }
+
+  .amenitiesInner {
+    grid-template-columns: 1fr;
+  }
+}
