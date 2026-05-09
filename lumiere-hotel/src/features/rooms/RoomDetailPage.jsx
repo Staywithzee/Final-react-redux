@@ -1,9 +1,13 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { motion } from 'framer-motion';
 import { useGetRoomByIdQuery } from './roomsApi';
 import { selectRoom, setDates, setGuests } from '../booking/bookingSlice';
 import { selectTotalNights, selectTotalPrice } from '../booking/bookingSelectors';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import { PageWrapper } from '../../components/PageWrapper/PageWrapper';
+import { slideLeft, slideRight, staggerContainer, staggerItem } from '../../utils/transitions';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
 import styles from './RoomDetailPage.module.css';
 
 const amenityIcons = {
@@ -60,164 +64,188 @@ export default function RoomDetailPage() {
     : String(room.amenities || '').split(',').map((a) => a.trim()).filter(Boolean);
 
   return (
-    <div className={styles.page}>
+    <PageWrapper>
+      <div className={styles.page}>
 
-      {/* ── HERO IMAGE ── */}
-      <div className={styles.hero}>
-        <img src={room.imageUrl} alt={room.name} className={styles.heroImg} />
-        <div className={styles.heroGradient} />
+        {/* ── HERO IMAGE ── */}
+        <motion.div
+          className={styles.hero}
+          initial={{ clipPath: 'inset(0 100% 0 0)' }}
+          animate={{ clipPath: 'inset(0 0% 0 0)' }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <img src={room.imageUrl} alt={room.name} className={styles.heroImg} />
+          <div className={styles.heroGradient} />
 
-        {/* Back button */}
-        <button className={styles.back} onClick={() => navigate('/rooms')}>
-          ← Rooms
-        </button>
-
-        {/* Unavailable ribbon */}
-        {!room.available && (
-          <div className={styles.unavailableRibbon}>Currently Unavailable</div>
-        )}
-
-        {/* Room identity overlay */}
-        <div className={styles.heroInfo}>
-          <span className={styles.heroCat}>{room.category}</span>
-          <h1 className={styles.heroName}>{room.name}</h1>
-          <div className={styles.heroMeta}>
-            <span>{room.maxGuests} Guests</span>
-            <span className={styles.heroDot}>·</span>
-            <span>{room.size} m²</span>
-            <span className={styles.heroDot}>·</span>
-            <span>{formatPrice(room.pricePerNight)} / night</span>
-          </div>
-        </div>
-      </div>
-
-      {/* ── BODY ── */}
-      <div className={styles.body}>
-
-        {/* LEFT: Details */}
-        <div className={styles.details}>
-
-          {/* Description */}
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>About This Room</h2>
-            <p className={styles.description}>{room.description}</p>
-          </section>
-
-          <div className={styles.divider} />
-
-          {/* Amenities */}
-          {amenityList.length > 0 && (
-            <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>Amenities</h2>
-              <div className={styles.amenities}>
-                {amenityList.map((a) => (
-                  <div key={a} className={styles.amenityItem}>
-                    <span className={styles.amenityIcon}>
-                      {amenityIcons[a] || '·'}
-                    </span>
-                    <span className={styles.amenityName}>{a}</span>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          <div className={styles.divider} />
-
-          {/* Policies */}
-          <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>Policies</h2>
-            <div className={styles.policies}>
-              <div className={styles.policy}>
-                <span className={styles.policyLabel}>Check-in</span>
-                <span className={styles.policyVal}>From 15:00</span>
-              </div>
-              <div className={styles.policy}>
-                <span className={styles.policyLabel}>Check-out</span>
-                <span className={styles.policyVal}>Until 12:00</span>
-              </div>
-              <div className={styles.policy}>
-                <span className={styles.policyLabel}>Cancellation</span>
-                <span className={styles.policyVal}>Free up to 48h before arrival</span>
-              </div>
-              <div className={styles.policy}>
-                <span className={styles.policyLabel}>Pets</span>
-                <span className={styles.policyVal}>Not permitted</span>
-              </div>
-            </div>
-          </section>
-        </div>
-
-        {/* RIGHT: Booking Widget */}
-        <aside className={styles.widget}>
-          <div className={styles.widgetPrice}>
-            <span className={styles.priceAmt}>{formatPrice(room.pricePerNight)}</span>
-            <span className={styles.pricePer}>per night</span>
-          </div>
-
-          <div className={styles.dateRow}>
-            <div className={styles.dateField}>
-              <label className={styles.fieldLabel}>Check-In</label>
-              <input
-                type="date"
-                className={styles.fieldInput}
-                min={today}
-                value={booking.checkIn}
-                onChange={(e) =>
-                  dispatch(setDates({ checkIn: e.target.value, checkOut: booking.checkOut }))
-                }
-              />
-            </div>
-            <div className={styles.dateDivider} />
-            <div className={styles.dateField}>
-              <label className={styles.fieldLabel}>Check-Out</label>
-              <input
-                type="date"
-                className={styles.fieldInput}
-                min={booking.checkIn || today}
-                value={booking.checkOut}
-                onChange={(e) =>
-                  dispatch(setDates({ checkIn: booking.checkIn, checkOut: e.target.value }))
-                }
-              />
-            </div>
-          </div>
-
-          <div className={styles.guestsField}>
-            <label className={styles.fieldLabel}>Guests</label>
-            <select
-              className={styles.fieldInput}
-              value={booking.guests}
-              onChange={(e) => dispatch(setGuests(Number(e.target.value)))}
-            >
-              {[...Array(Math.max(1, Number(room.maxGuests) || 1))].map((_, i) => (
-                <option key={i + 1} value={i + 1}>
-                  {i + 1} {i === 0 ? 'Guest' : 'Guests'}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {totalNights > 0 && (
-            <div className={styles.priceBreakdown}>
-              <div className={styles.breakdownRow}>
-                <span>{formatPrice(room.pricePerNight)} × {totalNights} {totalNights === 1 ? 'night' : 'nights'}</span>
-                <span>{formatPrice(totalPrice)}</span>
-              </div>
-              <div className={`${styles.breakdownRow} ${styles.breakdownTotal}`}>
-                <span>Total</span>
-                <span>{formatPrice(totalPrice)}</span>
-              </div>
-            </div>
-          )}
-
-          <button className={styles.bookBtn} onClick={handleBook} disabled={!room.available}>
-            {room.available ? 'Reserve This Room' : 'Currently Unavailable'}
+          <button className={styles.back} onClick={() => navigate('/rooms')}>
+            ← Rooms
           </button>
 
-          <p className={styles.widgetNote}>No charge until confirmation · Free cancellation</p>
-        </aside>
+          {!room.available && (
+            <div className={styles.unavailableRibbon}>Currently Unavailable</div>
+          )}
+
+          <motion.div
+            className={styles.heroInfo}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <span className={styles.heroCat}>{room.category}</span>
+            <h1 className={styles.heroName}>{room.name}</h1>
+            <div className={styles.heroMeta}>
+              <span>{room.maxGuests} Guests</span>
+              <span className={styles.heroDot}>·</span>
+              <span>{room.size} m²</span>
+              <span className={styles.heroDot}>·</span>
+              <span>{formatPrice(room.pricePerNight)} / night</span>
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* ── BODY ── */}
+        <div className={styles.body}>
+
+          {/* LEFT: Details */}
+          <motion.div
+            className={styles.details}
+            variants={slideLeft}
+            initial="hidden"
+            animate="visible"
+          >
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>About This Room</h2>
+              <p className={styles.description}>{room.description}</p>
+            </section>
+
+            <div className={styles.divider} />
+
+            {amenityList.length > 0 && (
+              <section className={styles.section}>
+                <h2 className={styles.sectionTitle}>Amenities</h2>
+                <motion.div
+                  className={styles.amenities}
+                  variants={staggerContainer}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  {amenityList.map((a) => (
+                    <motion.div key={a} className={styles.amenityItem} variants={staggerItem}>
+                      <span className={styles.amenityIcon}>{amenityIcons[a] || '·'}</span>
+                      <span className={styles.amenityName}>{a}</span>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </section>
+            )}
+
+            <div className={styles.divider} />
+
+            <section className={styles.section}>
+              <h2 className={styles.sectionTitle}>Policies</h2>
+              <div className={styles.policies}>
+                <div className={styles.policy}>
+                  <span className={styles.policyLabel}>Check-in</span>
+                  <span className={styles.policyVal}>From 15:00</span>
+                </div>
+                <div className={styles.policy}>
+                  <span className={styles.policyLabel}>Check-out</span>
+                  <span className={styles.policyVal}>Until 12:00</span>
+                </div>
+                <div className={styles.policy}>
+                  <span className={styles.policyLabel}>Cancellation</span>
+                  <span className={styles.policyVal}>Free up to 48h before arrival</span>
+                </div>
+                <div className={styles.policy}>
+                  <span className={styles.policyLabel}>Pets</span>
+                  <span className={styles.policyVal}>Not permitted</span>
+                </div>
+              </div>
+            </section>
+          </motion.div>
+
+          {/* RIGHT: Booking Widget */}
+          <motion.aside
+            className={styles.widget}
+            variants={slideRight}
+            initial="hidden"
+            animate="visible"
+          >
+            <div className={styles.widgetPrice}>
+              <span className={styles.priceAmt}>{formatPrice(room.pricePerNight)}</span>
+              <span className={styles.pricePer}>per night</span>
+            </div>
+
+            <div className={styles.dateRow}>
+              <div className={styles.dateField}>
+                <label className={styles.fieldLabel}>Check-In</label>
+                <input
+                  type="date"
+                  className={styles.fieldInput}
+                  min={today}
+                  value={booking.checkIn}
+                  onChange={(e) =>
+                    dispatch(setDates({ checkIn: e.target.value, checkOut: booking.checkOut }))
+                  }
+                />
+              </div>
+              <div className={styles.dateDivider} />
+              <div className={styles.dateField}>
+                <label className={styles.fieldLabel}>Check-Out</label>
+                <input
+                  type="date"
+                  className={styles.fieldInput}
+                  min={booking.checkIn || today}
+                  value={booking.checkOut}
+                  onChange={(e) =>
+                    dispatch(setDates({ checkIn: booking.checkIn, checkOut: e.target.value }))
+                  }
+                />
+              </div>
+            </div>
+
+            <div className={styles.guestsField}>
+              <label className={styles.fieldLabel}>Guests</label>
+              <select
+                className={styles.fieldInput}
+                value={booking.guests}
+                onChange={(e) => dispatch(setGuests(Number(e.target.value)))}
+              >
+                {[...Array(Math.max(1, Number(room.maxGuests) || 1))].map((_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {i + 1} {i === 0 ? 'Guest' : 'Guests'}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {totalNights > 0 && (
+              <div className={styles.priceBreakdown}>
+                <div className={styles.breakdownRow}>
+                  <span>{formatPrice(room.pricePerNight)} × {totalNights} {totalNights === 1 ? 'night' : 'nights'}</span>
+                  <span>{formatPrice(totalPrice)}</span>
+                </div>
+                <div className={`${styles.breakdownRow} ${styles.breakdownTotal}`}>
+                  <span>Total</span>
+                  <span>{formatPrice(totalPrice)}</span>
+                </div>
+              </div>
+            )}
+
+            <motion.button
+              className={styles.bookBtn}
+              onClick={handleBook}
+              disabled={!room.available}
+              whileHover={{ scale: room.available ? 1.02 : 1 }}
+              whileTap={{ scale: room.available ? 0.98 : 1 }}
+            >
+              {room.available ? 'Reserve This Room' : 'Currently Unavailable'}
+            </motion.button>
+
+            <p className={styles.widgetNote}>No charge until confirmation · Free cancellation</p>
+          </motion.aside>
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 }

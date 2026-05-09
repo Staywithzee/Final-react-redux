@@ -1,4 +1,7 @@
-import { Routes, Route } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import { useLocation, Routes, Route } from 'react-router-dom';
+import { useSmoothScroll } from './hooks/useSmoothScroll';
+import { ScrollProgress } from './components/ScrollProgress/ScrollProgress';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import Toast from './components/Toast/Toast';
@@ -13,21 +16,27 @@ import AdminPage from './features/admin/AdminPage';
 import RoomFormPage from './features/admin/RoomFormPage';
 
 export default function App() {
+  useSmoothScroll();
+  const location = useLocation();
+
   return (
     <>
+      <ScrollProgress />
       <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/rooms" element={<RoomsPage />} />
-        <Route path="/rooms/:id" element={<RoomDetailPage />} />
-        <Route path="/dining" element={<DiningPage />} />
-        <Route path="/gallery" element={<GalleryPage />} />
-        <Route path="/booking" element={<BookingPage />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/admin/rooms/new" element={<RoomFormPage />} />
-        <Route path="/admin/rooms/:id/edit" element={<RoomFormPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      <AnimatePresence mode="wait" initial={false}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/"                       element={<HomePage />} />
+          <Route path="/rooms"                  element={<RoomsPage />} />
+          <Route path="/rooms/:id"              element={<RoomDetailPage />} />
+          <Route path="/dining"                 element={<DiningPage />} />
+          <Route path="/gallery"                element={<GalleryPage />} />
+          <Route path="/booking"                element={<BookingPage />} />
+          <Route path="/admin"                  element={<AdminPage />} />
+          <Route path="/admin/rooms/new"        element={<RoomFormPage />} />
+          <Route path="/admin/rooms/:id/edit"   element={<RoomFormPage />} />
+          <Route path="*"                       element={<NotFoundPage />} />
+        </Routes>
+      </AnimatePresence>
       <Footer />
       <Toast />
     </>
