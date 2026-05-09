@@ -1,10 +1,20 @@
-/* HERO */
+/* ── Scroll Progress Bar ─────────────────────────────────────────────────── */
+.progressBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gold);
+  transform-origin: left;
+  z-index: 9999;
+}
+
+/* ── HERO ────────────────────────────────────────────────────────────────── */
 .hero {
   position: relative;
   height: 100vh;
   min-height: 640px;
-  background: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1800&q=85')
-    center / cover no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,13 +22,22 @@
   overflow: hidden;
 }
 
+/* Parallax background layer — extends beyond container for movement room */
+.heroBg {
+  position: absolute;
+  inset: -20% 0;
+  background: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1800&q=85')
+    center / cover no-repeat;
+  will-change: transform;
+}
+
 .heroOverlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(250, 247, 242, 0.15) 0%,
-    rgba(44, 40, 32, 0.35) 100%
+    rgba(250, 247, 242, 0.1) 0%,
+    rgba(44, 40, 32, 0.42) 100%
   );
 }
 
@@ -40,6 +59,7 @@
   margin: 0;
 }
 
+/* Title wrapper — overflow hidden to clip letter slide-ups */
 .heroTitle {
   font-family: var(--font-display);
   font-size: clamp(4rem, 10vw, 9rem);
@@ -49,6 +69,13 @@
   margin: 0;
   line-height: 1;
   text-shadow: 0 2px 40px rgba(44, 40, 32, 0.3);
+  display: flex;
+}
+
+.heroTitleClip {
+  display: inline-block;
+  overflow: hidden;
+  line-height: 1.05;
 }
 
 .heroSubtitle {
@@ -79,12 +106,11 @@
   color: var(--warm-white);
   padding: 14px 32px;
   text-decoration: none;
-  transition: background 0.2s, transform 0.2s;
+  transition: background 0.2s;
 }
 
 .ctaPrimary:hover {
   background: var(--gold-dark);
-  transform: translateY(-1px);
 }
 
 .ctaSecondary {
@@ -120,13 +146,7 @@
   display: block;
   width: 1px;
   height: 48px;
-  background: rgba(250, 247, 242, 0.5);
-  animation: scrollPulse 2s ease infinite;
-}
-
-@keyframes scrollPulse {
-  0%, 100% { opacity: 0.3; transform: scaleY(1); }
-  50% { opacity: 0.9; transform: scaleY(1.2); }
+  background: rgba(250, 247, 242, 0.55);
 }
 
 .scrollLabel {
@@ -137,7 +157,7 @@
   color: rgba(250, 247, 242, 0.5);
 }
 
-/* FEATURES */
+/* ── FEATURES ────────────────────────────────────────────────────────────── */
 .features {
   background: var(--charcoal);
   padding: 60px 40px;
@@ -157,6 +177,7 @@
   align-items: center;
   text-align: center;
   gap: 12px;
+  position: relative;
 }
 
 .featureIcon {
@@ -183,7 +204,14 @@
   line-height: 1.6;
 }
 
-/* ROOMS PREVIEW */
+.featureUnderline {
+  display: block;
+  height: 1px;
+  background: var(--gold);
+  margin-top: 4px;
+}
+
+/* ── ROOMS PREVIEW ───────────────────────────────────────────────────────── */
 .roomsPreview {
   background: var(--warm-white);
   padding: 96px 40px;
@@ -202,6 +230,12 @@
   text-transform: uppercase;
   color: var(--gold-dark);
   margin: 0 0 12px;
+}
+
+/* Overflow clip for text reveal animations */
+.clipWrap {
+  overflow: hidden;
+  display: block;
 }
 
 .sectionTitle {
@@ -253,7 +287,7 @@
   color: var(--warm-white);
 }
 
-/* ABOUT */
+/* ── ABOUT ───────────────────────────────────────────────────────────────── */
 .about {
   background: var(--cream);
   padding: 96px 40px;
@@ -308,31 +342,106 @@
   color: var(--gold-dark);
 }
 
+/* Animated stat counters */
+.counters {
+  display: flex;
+  gap: 32px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.counter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.counterNum {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 300;
+  color: var(--charcoal);
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.counterLabel {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* About image with parallax */
 .aboutVisual {
   position: relative;
 }
 
+/* Overflow clip for parallax image */
+.parallaxWrap {
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 4 / 5;
+}
+
 .aboutImg {
   width: 100%;
-  display: block;
-  aspect-ratio: 4 / 5;
+  height: 115%;
   object-fit: cover;
-}
-
-.aboutAccent {
+  display: block;
   position: absolute;
-  bottom: -24px;
-  right: -24px;
-  width: 160px;
-  height: 160px;
-  border: 1px solid var(--gold);
-  z-index: -1;
+  top: -7.5%;
+  left: 0;
 }
 
-/* TESTIMONIALS */
+.parallaxEl {
+  will-change: transform;
+}
+
+/* Animated corner frames */
+.corner {
+  position: absolute;
+  border-color: var(--gold);
+  border-style: solid;
+}
+
+.cornerTL {
+  top: -12px;
+  left: -12px;
+  border-width: 1px 0 0 1px;
+}
+
+.cornerBR {
+  bottom: -12px;
+  right: -12px;
+  border-width: 0 1px 1px 0;
+}
+
+/* ── TESTIMONIALS ────────────────────────────────────────────────────────── */
 .testimonials {
   background: var(--warm-white);
   padding: 96px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Large faded watermark behind cards */
+.testimonialWatermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-display);
+  font-size: clamp(6rem, 15vw, 14rem);
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  color: rgba(201, 169, 110, 0.06);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  will-change: transform;
 }
 
 .testimonialsGrid {
@@ -341,6 +450,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 28px;
+  position: relative;
 }
 
 .quote {
@@ -385,11 +495,38 @@
   color: var(--text-muted);
 }
 
-/* CTA BANNER */
+/* ── CTA BANNER ──────────────────────────────────────────────────────────── */
 .ctaBanner {
   background: var(--charcoal);
   padding: 96px 40px;
   text-align: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Infinite marquee */
+.marqueeWrap {
+  overflow: hidden;
+  white-space: nowrap;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.12);
+}
+
+.marqueeTrack {
+  display: inline-flex;
+}
+
+.marqueeText {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(201, 169, 110, 0.35);
+  padding-right: 0;
 }
 
 .ctaBannerInner {
@@ -399,10 +536,11 @@
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  padding-top: 32px;
 }
 
-.ctaBannerInner .eyebrow {
-  color: var(--gold);
+.eyebrowGold {
+  color: var(--gold) !important;
 }
 
 .ctaBannerTitle {
@@ -423,6 +561,14 @@
   max-width: 440px;
 }
 
+/* Magnetic button wrapper */
+.magneticWrap {
+  display: inline-block;
+  margin-top: 8px;
+  cursor: pointer;
+  will-change: transform;
+}
+
 .ctaBannerBtn {
   font-family: var(--font-body);
   font-size: 0.7rem;
@@ -432,7 +578,7 @@
   background: var(--gold);
   text-decoration: none;
   padding: 16px 40px;
-  margin-top: 8px;
+  display: inline-block;
   transition: background 0.2s;
 }
 
@@ -440,6 +586,7 @@
   background: var(--gold-dark);
 }
 
+/* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .featuresInner {
     grid-template-columns: repeat(2, 1fr);
@@ -458,7 +605,8 @@
     gap: 48px;
   }
 
-  .aboutAccent {
+  .cornerTL,
+  .cornerBR {
     display: none;
   }
 }
@@ -477,5 +625,14 @@
   .features {
     padding-left: 24px;
     padding-right: 24px;
+  }
+
+  .counters {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .heroTitle {
+    justify-content: center;
   }
 }
