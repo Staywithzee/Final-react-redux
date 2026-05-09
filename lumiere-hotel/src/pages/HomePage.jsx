@@ -429,7 +429,7 @@ export default function HomePage() {
             >
               <div className={styles.parallaxWrap} ref={aboutImageRef}>
                 <motion.img
-                  src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80"
+                  src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800&q=80"
                   alt="Lumière Hotel Interior"
                   className={`${styles.aboutImg} ${styles.parallaxEl}`}
                   style={{ y: aboutImgY }}
