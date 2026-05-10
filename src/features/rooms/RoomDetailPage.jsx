@@ -4,10 +4,10 @@ import { motion } from 'framer-motion';
 import { useGetRoomByIdQuery } from './roomsApi';
 import { selectRoom, setDates, setGuests } from '../booking/bookingSlice';
 import { selectTotalNights, selectTotalPrice } from '../booking/bookingSelectors';
+import { useLanguage } from '../../context/LanguageContext';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import { PageWrapper } from '../../components/PageWrapper/PageWrapper';
 import { slideLeft, slideRight, staggerContainer, staggerItem } from '../../utils/transitions';
-import { useScrollReveal } from '../../hooks/useScrollReveal';
 import styles from './RoomDetailPage.module.css';
 
 const amenityIcons = {
@@ -26,6 +26,8 @@ export default function RoomDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { t } = useLanguage();
+  const rd = t.roomDetail;
 
   const { data: room, isLoading, isError, error } = useGetRoomByIdQuery(id);
   const booking = useSelector((state) => state.booking);
@@ -78,11 +80,11 @@ export default function RoomDetailPage() {
           <div className={styles.heroGradient} />
 
           <button className={styles.back} onClick={() => navigate('/rooms')}>
-            ← Rooms
+            {rd.back}
           </button>
 
           {!room.available && (
-            <div className={styles.unavailableRibbon}>Currently Unavailable</div>
+            <div className={styles.unavailableRibbon}>{rd.unavailable}</div>
           )}
 
           <motion.div
@@ -94,11 +96,11 @@ export default function RoomDetailPage() {
             <span className={styles.heroCat}>{room.category}</span>
             <h1 className={styles.heroName}>{room.name}</h1>
             <div className={styles.heroMeta}>
-              <span>{room.maxGuests} Guests</span>
+              <span>{rd.guests(room.maxGuests)}</span>
               <span className={styles.heroDot}>·</span>
               <span>{room.size} m²</span>
               <span className={styles.heroDot}>·</span>
-              <span>{formatPrice(room.pricePerNight)} / night</span>
+              <span>{formatPrice(room.pricePerNight)} {rd.pricePerNight}</span>
             </div>
           </motion.div>
         </motion.div>
@@ -114,7 +116,7 @@ export default function RoomDetailPage() {
             animate="visible"
           >
             <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>About This Room</h2>
+              <h2 className={styles.sectionTitle}>{rd.about}</h2>
               <p className={styles.description}>{room.description}</p>
             </section>
 
@@ -122,7 +124,7 @@ export default function RoomDetailPage() {
 
             {amenityList.length > 0 && (
               <section className={styles.section}>
-                <h2 className={styles.sectionTitle}>Amenities</h2>
+                <h2 className={styles.sectionTitle}>{rd.amenities}</h2>
                 <motion.div
                   className={styles.amenities}
                   variants={staggerContainer}
@@ -142,23 +144,23 @@ export default function RoomDetailPage() {
             <div className={styles.divider} />
 
             <section className={styles.section}>
-              <h2 className={styles.sectionTitle}>Policies</h2>
+              <h2 className={styles.sectionTitle}>{rd.policies}</h2>
               <div className={styles.policies}>
                 <div className={styles.policy}>
-                  <span className={styles.policyLabel}>Check-in</span>
-                  <span className={styles.policyVal}>From 15:00</span>
+                  <span className={styles.policyLabel}>{rd.checkIn}</span>
+                  <span className={styles.policyVal}>{rd.checkInTime}</span>
                 </div>
                 <div className={styles.policy}>
-                  <span className={styles.policyLabel}>Check-out</span>
-                  <span className={styles.policyVal}>Until 12:00</span>
+                  <span className={styles.policyLabel}>{rd.checkOut}</span>
+                  <span className={styles.policyVal}>{rd.checkOutTime}</span>
                 </div>
                 <div className={styles.policy}>
-                  <span className={styles.policyLabel}>Cancellation</span>
-                  <span className={styles.policyVal}>Free up to 48h before arrival</span>
+                  <span className={styles.policyLabel}>{rd.cancellation}</span>
+                  <span className={styles.policyVal}>{rd.cancelPolicy}</span>
                 </div>
                 <div className={styles.policy}>
-                  <span className={styles.policyLabel}>Pets</span>
-                  <span className={styles.policyVal}>Not permitted</span>
+                  <span className={styles.policyLabel}>{rd.pets}</span>
+                  <span className={styles.policyVal}>{rd.petsPolicy}</span>
                 </div>
               </div>
             </section>
@@ -173,12 +175,12 @@ export default function RoomDetailPage() {
           >
             <div className={styles.widgetPrice}>
               <span className={styles.priceAmt}>{formatPrice(room.pricePerNight)}</span>
-              <span className={styles.pricePer}>per night</span>
+              <span className={styles.pricePer}>{rd.pricePerNight}</span>
             </div>
 
             <div className={styles.dateRow}>
               <div className={styles.dateField}>
-                <label className={styles.fieldLabel}>Check-In</label>
+                <label className={styles.fieldLabel}>{rd.checkInLabel}</label>
                 <input
                   type="date"
                   className={styles.fieldInput}
@@ -191,7 +193,7 @@ export default function RoomDetailPage() {
               </div>
               <div className={styles.dateDivider} />
               <div className={styles.dateField}>
-                <label className={styles.fieldLabel}>Check-Out</label>
+                <label className={styles.fieldLabel}>{rd.checkOutLabel}</label>
                 <input
                   type="date"
                   className={styles.fieldInput}
@@ -205,7 +207,7 @@ export default function RoomDetailPage() {
             </div>
 
             <div className={styles.guestsField}>
-              <label className={styles.fieldLabel}>Guests</label>
+              <label className={styles.fieldLabel}>{rd.guestsLabel}</label>
               <select
                 className={styles.fieldInput}
                 value={booking.guests}
@@ -213,7 +215,7 @@ export default function RoomDetailPage() {
               >
                 {[...Array(Math.max(1, Number(room.maxGuests) || 1))].map((_, i) => (
                   <option key={i + 1} value={i + 1}>
-                    {i + 1} {i === 0 ? 'Guest' : 'Guests'}
+                    {rd.guests(i + 1)}
                   </option>
                 ))}
               </select>
@@ -222,11 +224,11 @@ export default function RoomDetailPage() {
             {totalNights > 0 && (
               <div className={styles.priceBreakdown}>
                 <div className={styles.breakdownRow}>
-                  <span>{formatPrice(room.pricePerNight)} × {totalNights} {totalNights === 1 ? 'night' : 'nights'}</span>
+                  <span>{rd.nightRate(formatPrice(room.pricePerNight))} ({rd.nights(totalNights)})</span>
                   <span>{formatPrice(totalPrice)}</span>
                 </div>
                 <div className={`${styles.breakdownRow} ${styles.breakdownTotal}`}>
-                  <span>Total</span>
+                  <span>{t.booking.totalLabel}</span>
                   <span>{formatPrice(totalPrice)}</span>
                 </div>
               </div>
@@ -235,13 +237,14 @@ export default function RoomDetailPage() {
             <motion.button
               className={styles.bookBtn}
               onClick={handleBook}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              disabled={!room.available}
+              whileHover={room.available ? { scale: 1.02 } : {}}
+              whileTap={room.available ? { scale: 0.98 } : {}}
             >
-              {room.available ? 'Reserve This Room' : 'Currently Unavailable'}
+              {room.available ? rd.bookBtn : rd.unavailBtn}
             </motion.button>
 
-            <p className={styles.widgetNote}>No charge until confirmation · Free cancellation</p>
+            <p className={styles.widgetNote}>{rd.taxNote}</p>
           </motion.aside>
         </div>
       </div>

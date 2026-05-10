@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '../context/LanguageContext';
 import { PageWrapper } from '../components/PageWrapper/PageWrapper';
 import { Reveal } from '../components/Reveal/Reveal';
 import { scaleIn, staggerContainer } from '../utils/transitions';
 import styles from './GalleryPage.module.css';
+
+// Internal category keys — used for filtering logic (never translated)
+const CATEGORY_KEYS = ['All', 'Rooms', 'Dining', 'Facilities'];
 
 const ALL_IMAGES = [
   { id: 1,  src: 'https://images.unsplash.com/photo-1591088398332-8a7791972843?w=800&q=80',  alt: 'Hotel Lobby',     category: 'Facilities' },
@@ -20,11 +24,11 @@ const ALL_IMAGES = [
   { id: 12, src: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80',     alt: 'Infinity Pool',   category: 'Facilities' },
 ];
 
-const CATEGORIES = ['All', 'Rooms', 'Dining', 'Facilities'];
-
 export default function GalleryPage() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [lightbox, setLightbox] = useState(null);
+  const { t } = useLanguage();
+  const g = t.gallery;
 
   const filtered =
     activeCategory === 'All'
@@ -50,22 +54,20 @@ export default function GalleryPage() {
       <div className={styles.page} onKeyDown={handleKeyDown} tabIndex={-1}>
         <Reveal>
           <div className={styles.header}>
-            <p className={styles.eyebrow}>Visual Journey</p>
-            <h1 className={styles.title}>The Gallery</h1>
-            <p className={styles.subtitle}>
-              A curated collection of moments that define the Lumière experience
-            </p>
+            <p className={styles.eyebrow}>{g.eyebrow}</p>
+            <h1 className={styles.title}>{g.title}</h1>
+            <p className={styles.subtitle}>{g.sub}</p>
           </div>
         </Reveal>
 
         <div className={styles.filters}>
-          {CATEGORIES.map((cat) => (
+          {CATEGORY_KEYS.map((key) => (
             <button
-              key={cat}
-              className={`${styles.filterBtn} ${activeCategory === cat ? styles.filterActive : ''}`}
-              onClick={() => setActiveCategory(cat)}
+              key={key}
+              className={`${styles.filterBtn} ${activeCategory === key ? styles.filterActive : ''}`}
+              onClick={() => setActiveCategory(key)}
             >
-              {cat}
+              {g.categoryLabels[key]}
             </button>
           ))}
         </div>
@@ -93,7 +95,7 @@ export default function GalleryPage() {
                 <img src={img.src} alt={img.alt} className={styles.img} loading="lazy" />
                 <div className={styles.overlay}>
                   <span className={styles.overlayText}>{img.alt}</span>
-                  <span className={styles.overlayCategory}>{img.category}</span>
+                  <span className={styles.overlayCategory}>{g.categoryLabels[img.category]}</span>
                 </div>
               </motion.button>
             ))}
@@ -123,7 +125,7 @@ export default function GalleryPage() {
                 />
                 <div className={styles.lightboxCaption}>
                   <span className={styles.lightboxAlt}>{lightbox.alt}</span>
-                  <span className={styles.lightboxCat}>{lightbox.category}</span>
+                  <span className={styles.lightboxCat}>{g.categoryLabels[lightbox.category]}</span>
                 </div>
               </div>
               <div className={styles.lightboxNav}>

@@ -1,19 +1,16 @@
 import { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLanguage } from '../../context/LanguageContext';
 import styles from './Navbar.module.css';
-
-const NAV_LINKS = [
-  { to: '/', label: 'Home', end: true },
-  { to: '/rooms', label: 'Rooms' },
-  { to: '/dining', label: 'Dining' },
-  { to: '/gallery', label: 'Gallery' },
-  { to: '/booking', label: 'Book a Stay' },
-  { to: '/admin', label: 'Admin' },
-];
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { lang, setLang, t } = useLanguage();
+
+  const toggleLang = (target) => {
+    if (target !== lang) setLang(target);
+  };
 
   return (
     <>
@@ -27,17 +24,29 @@ export default function Navbar() {
             aria-label="Open navigation menu"
           >
             <span className={styles.menuLines} />
-            MENU
+            {t.nav.menu}
           </button>
         </div>
 
         <div className={styles.divider} />
 
-        {/* Language — hidden on mobile */}
+        {/* Language switcher — hidden on mobile */}
         <div className={`${styles.segment} ${styles.segHide}`}>
-          <span className={styles.lang}>EN</span>
+          <button
+            className={`${styles.lang} ${lang === 'en' ? styles.langOn : ''}`}
+            onClick={() => toggleLang('en')}
+            aria-label="Switch to English"
+          >
+            EN
+          </button>
           <span className={styles.langSlash}>/</span>
-          <span className={`${styles.lang} ${styles.langOn}`}>FR</span>
+          <button
+            className={`${styles.lang} ${lang === 'th' ? styles.langOn : ''}`}
+            onClick={() => toggleLang('th')}
+            aria-label="Switch to Thai"
+          >
+            TH
+          </button>
         </div>
 
         <div className={`${styles.divider} ${styles.divHide}`} />
@@ -51,7 +60,7 @@ export default function Navbar() {
 
         {/* Dining link — hidden on mobile */}
         <div className={`${styles.segment} ${styles.segHide}`}>
-          <NavLink to="/dining" className={styles.navLink}>DINING</NavLink>
+          <NavLink to="/dining" className={styles.navLink}>{t.nav.dining}</NavLink>
         </div>
 
         <div className={styles.divider} />
@@ -59,7 +68,7 @@ export default function Navbar() {
         {/* Booking CTA */}
         <div className={`${styles.segment} ${styles.segBook}`}>
           <Link to="/booking" className={styles.bookingLink}>
-            BOOKING <span className={styles.bookArrow}>→</span>
+            {t.nav.booking} <span className={styles.bookArrow}>→</span>
           </Link>
         </div>
       </nav>
@@ -79,11 +88,11 @@ export default function Navbar() {
               onClick={() => setMenuOpen(false)}
               aria-label="Close menu"
             >
-              ✕ CLOSE
+              {t.nav.close}
             </button>
 
             <nav className={styles.overlayNav}>
-              {NAV_LINKS.map(({ to, label, end }, i) => (
+              {t.nav.links.map(({ to, label, end }, i) => (
                 <motion.div
                   key={to}
                   initial={{ opacity: 0, x: -32 }}
@@ -110,7 +119,7 @@ export default function Navbar() {
             </nav>
 
             <div className={styles.overlayBottom}>
-              <p className={styles.overlayTagline}>Established 1924 · Paris</p>
+              <p className={styles.overlayTagline}>{t.nav.tagline}</p>
               <div className={styles.overlayContacts}>
                 <span>+33 1 42 86 87 88</span>
                 <span>reservations@lumiere.com</span>

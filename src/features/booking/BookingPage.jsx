@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { clearBooking } from './bookingSlice';
 import { showNotification } from '../ui/uiSlice';
 import { selectTotalNights, selectTotalPrice } from './bookingSelectors';
+import { useLanguage } from '../../context/LanguageContext';
 import { PageWrapper } from '../../components/PageWrapper/PageWrapper';
 import { slideLeft, slideRight, staggerContainer, staggerItem } from '../../utils/transitions';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
@@ -13,6 +14,8 @@ import styles from './BookingPage.module.css';
 export default function BookingPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { t } = useLanguage();
+  const b = t.booking;
 
   const booking = useSelector((state) => state.booking);
   const totalNights = useSelector(selectTotalNights);
@@ -26,10 +29,10 @@ export default function BookingPage() {
 
   const validate = () => {
     const newErrors = {};
-    if (!form.fullName.trim()) newErrors.fullName = 'Full name is required.';
-    if (!form.email.trim()) newErrors.email = 'Email is required.';
-    else if (!form.email.includes('@')) newErrors.email = 'Please enter a valid email address.';
-    if (!form.phone.trim()) newErrors.phone = 'Phone number is required.';
+    if (!form.fullName.trim()) newErrors.fullName = b.errors.fullName;
+    if (!form.email.trim()) newErrors.email = b.errors.email;
+    else if (!form.email.includes('@')) newErrors.email = b.errors.emailFmt;
+    if (!form.phone.trim()) newErrors.phone = b.errors.phone;
     return newErrors;
   };
 
@@ -47,7 +50,7 @@ export default function BookingPage() {
       return;
     }
     dispatch(clearBooking());
-    dispatch(showNotification({ message: 'Booking confirmed! We look forward to welcoming you.', type: 'success' }));
+    dispatch(showNotification({ message: b.successMsg, type: 'success' }));
     navigate('/');
   };
 
@@ -61,11 +64,11 @@ export default function BookingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h2 className={styles.emptyTitle}>No Room Selected</h2>
+            <h2 className={styles.emptyTitle}>{b.noRoom}</h2>
             <p className={styles.emptyText}>
               Please browse our rooms and select one before proceeding to booking.
             </p>
-            <Link to="/rooms" className={styles.emptyBtn}>Browse Rooms</Link>
+            <Link to="/rooms" className={styles.emptyBtn}>{b.browseRooms}</Link>
           </motion.div>
         </div>
       </PageWrapper>
@@ -76,8 +79,8 @@ export default function BookingPage() {
     <PageWrapper>
       <div className={styles.page}>
         <div className={styles.header}>
-          <p className={styles.eyebrow}>Reservations</p>
-          <h1 className={styles.title}>Complete Your Booking</h1>
+          <p className={styles.eyebrow}>{t.nav.booking}</p>
+          <h1 className={styles.title}>{b.title}</h1>
         </div>
 
         <div className={styles.layout}>
@@ -89,7 +92,7 @@ export default function BookingPage() {
             initial="hidden"
             animate={summaryInView ? 'visible' : 'hidden'}
           >
-            <h2 className={styles.summaryTitle}>Booking Summary</h2>
+            <h2 className={styles.summaryTitle}>{b.summaryTitle}</h2>
 
             <div className={styles.summaryRoom}>
               <img
@@ -105,29 +108,29 @@ export default function BookingPage() {
 
             <div className={styles.summaryDetails}>
               <div className={styles.summaryRow}>
-                <span className={styles.summaryLabel}>Check-In</span>
+                <span className={styles.summaryLabel}>{t.roomDetail.checkInLabel}</span>
                 <span className={styles.summaryValue}>
-                  {booking.checkIn || <span className={styles.na}>Not set</span>}
+                  {booking.checkIn || <span className={styles.na}>—</span>}
                 </span>
               </div>
               <div className={styles.summaryRow}>
-                <span className={styles.summaryLabel}>Check-Out</span>
+                <span className={styles.summaryLabel}>{t.roomDetail.checkOutLabel}</span>
                 <span className={styles.summaryValue}>
-                  {booking.checkOut || <span className={styles.na}>Not set</span>}
+                  {booking.checkOut || <span className={styles.na}>—</span>}
                 </span>
               </div>
               <div className={styles.summaryRow}>
-                <span className={styles.summaryLabel}>Guests</span>
+                <span className={styles.summaryLabel}>{b.guests}</span>
                 <span className={styles.summaryValue}>{booking.guests}</span>
               </div>
               <div className={styles.summaryRow}>
-                <span className={styles.summaryLabel}>Nights</span>
+                <span className={styles.summaryLabel}>{b.nights}</span>
                 <span className={styles.summaryValue}>{totalNights}</span>
               </div>
             </div>
 
             <div className={styles.summaryTotal}>
-              <span>Total</span>
+              <span>{b.totalLabel}</span>
               <span className={styles.totalAmount}>
                 {totalPrice.toLocaleString('en-US', {
                   style: 'currency',
@@ -148,7 +151,7 @@ export default function BookingPage() {
             initial="hidden"
             animate={formInView ? 'visible' : 'hidden'}
           >
-            <h2 className={styles.formTitle}>Guest Information</h2>
+            <h2 className={styles.formTitle}>{b.formTitle}</h2>
 
             <motion.div
               className={styles.fieldGroup}
@@ -157,9 +160,9 @@ export default function BookingPage() {
               animate="visible"
             >
               {[
-                { id: 'fullName', label: 'Full Name *',       type: 'text',  placeholder: 'Your full name' },
-                { id: 'email',    label: 'Email Address *',   type: 'email', placeholder: 'your@email.com' },
-                { id: 'phone',    label: 'Phone Number *',    type: 'tel',   placeholder: '+1 (555) 000-0000' },
+                { id: 'fullName', label: b.fullName, type: 'text',  placeholder: b.fullName },
+                { id: 'email',    label: b.email,    type: 'email', placeholder: 'your@email.com' },
+                { id: 'phone',    label: b.phone,    type: 'tel',   placeholder: '+1 (555) 000-0000' },
               ].map(({ id, label, type, placeholder }) => (
                 <motion.div key={id} className={styles.fieldItem} variants={staggerItem}>
                   <label className={styles.label} htmlFor={id}>{label}</label>
@@ -193,14 +196,14 @@ export default function BookingPage() {
               ))}
 
               <motion.div className={styles.fieldItem} variants={staggerItem}>
-                <label className={styles.label} htmlFor="specialRequests">Special Requests</label>
+                <label className={styles.label} htmlFor="specialRequests">{b.special}</label>
                 <textarea
                   id="specialRequests"
                   name="specialRequests"
                   className={styles.textarea}
                   value={form.specialRequests}
                   onChange={handleChange}
-                  placeholder="Any dietary requirements, room preferences, or special occasions..."
+                  placeholder={b.special}
                   rows={4}
                 />
               </motion.div>
@@ -212,7 +215,7 @@ export default function BookingPage() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              Confirm Reservation
+              {b.confirmBtn}
             </motion.button>
 
             <p className={styles.note}>

@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { motion } from 'framer-motion';
 import { showNotification } from '../features/ui/uiSlice';
+import { useLanguage } from '../context/LanguageContext';
 import { PageWrapper } from '../components/PageWrapper/PageWrapper';
 import { Reveal } from '../components/Reveal/Reveal';
 import { ParallaxImage } from '../components/ParallaxImage/ParallaxImage';
@@ -9,63 +10,7 @@ import { slideLeft, slideRight } from '../utils/transitions';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import styles from './DiningPage.module.css';
 
-const diningPanels = [
-  {
-    id: 'fine-dining',
-    tab: 'Fine Dining',
-    title: 'THE LUMIÈRE TABLE',
-    imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80',
-    exploreLink: '/dining',
-  },
-  {
-    id: 'rooftop',
-    tab: 'Rooftop Bar',
-    title: 'TERRASSE SKY LOUNGE',
-    imageUrl: 'https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=1200&q=80',
-    exploreLink: '/dining',
-  },
-  {
-    id: 'breakfast',
-    tab: 'Breakfast',
-    title: 'MORNING TABLE',
-    imageUrl: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80',
-    exploreLink: '/dining',
-  },
-  {
-    id: 'private',
-    tab: 'Private Events',
-    title: 'EXCLUSIVE DINING',
-    imageUrl: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=1200&q=80',
-    exploreLink: '/dining',
-  },
-];
-
-const restaurants = [
-  {
-    id: 1,
-    name: 'Le Lumière',
-    type: 'Fine Dining · French Cuisine',
-    hours: 'Dinner: 18:30 – 22:30 · Closed Mondays',
-    description:
-      'Our flagship restaurant, helmed by Executive Chef Étienne Bellard, presents a symphony of contemporary French gastronomy. Each dish tells a story of provenance and precision — a Michelin experience that begins with the first glance at the menu.',
-    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
-    tags: ['Michelin Star', 'Tasting Menu', 'Wine Pairing', 'Private Dining'],
-    dresscode: 'Smart Elegant',
-  },
-  {
-    id: 2,
-    name: 'Terrasse',
-    type: 'Rooftop Bar & Lounge',
-    hours: 'Daily: 17:00 – 01:00',
-    description:
-      'Perched on the 12th floor with panoramic city views, Terrasse is where golden hour lingers longest. Sip handcrafted cocktails as the city transitions from day to night — an intimate experience for two or a sophisticated gathering for many.',
-    image: 'https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=800&q=80',
-    tags: ['Cocktail Bar', 'Panoramic Views', 'Live Jazz Thursdays', 'Small Plates'],
-    dresscode: 'Smart Casual',
-  },
-];
-
-function RestaurantCard({ r, reversed }) {
+function RestaurantCard({ r, reversed, onReserve, reserveLabel, dressCodeLabel }) {
   const { ref: textRef, isInView: textInView } = useScrollReveal();
   const { ref: imgRef, isInView: imgInView } = useScrollReveal();
 
@@ -98,15 +43,15 @@ function RestaurantCard({ r, reversed }) {
           ))}
         </div>
         <div className={styles.restMeta}>
-          <span className={styles.dresscode}>Dress Code: {r.dresscode}</span>
+          <span className={styles.dresscode}>{dressCodeLabel}: {r.dresscode}</span>
         </div>
         <motion.button
           className={styles.reserveBtn}
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
-          onClick={() => {}}
+          onClick={() => onReserve(r.name)}
         >
-          Reserve a Table
+          {reserveLabel}
         </motion.button>
       </motion.div>
     </article>
@@ -115,6 +60,8 @@ function RestaurantCard({ r, reversed }) {
 
 export default function DiningPage() {
   const dispatch = useDispatch();
+  const { t } = useLanguage();
+  const d = t.dining;
 
   const handleReserve = (name) => {
     dispatch(showNotification({
@@ -131,15 +78,13 @@ export default function DiningPage() {
           <div className={styles.heroOverlay} />
           <div className={styles.heroContent}>
             <Reveal delay={0.1}>
-              <p className={styles.eyebrow}>Culinary Arts</p>
+              <p className={styles.eyebrow}>{d.eyebrow}</p>
             </Reveal>
             <Reveal delay={0.25}>
-              <h1 className={styles.heroTitle}>The Lumière Table</h1>
+              <h1 className={styles.heroTitle}>{d.title}</h1>
             </Reveal>
             <Reveal delay={0.4}>
-              <p className={styles.heroSub}>
-                Where French culinary heritage meets contemporary artistry
-              </p>
+              <p className={styles.heroSub}>{d.sub}</p>
             </Reveal>
           </div>
         </section>
@@ -148,23 +93,26 @@ export default function DiningPage() {
         <section className={styles.intro}>
           <Reveal>
             <div className={styles.introInner}>
-              <p className={styles.introText}>
-                At Lumière, dining is not merely sustenance — it is ceremony. Our culinary team
-                sources the finest seasonal ingredients from local artisan producers, transforming
-                them into edible poetry with classical technique and modern imagination.
-              </p>
+              <p className={styles.introText}>{d.intro}</p>
             </div>
           </Reveal>
         </section>
 
         {/* Dining accordion */}
-        <AccordionPanels panels={diningPanels} />
+        <AccordionPanels panels={d.panels} />
 
         {/* Restaurants */}
         <section className={styles.restaurants}>
           <div className={styles.restaurantsInner}>
-            {restaurants.map((r, i) => (
-              <RestaurantCard key={r.id} r={r} reversed={i % 2 !== 0} onReserve={handleReserve} />
+            {d.restaurants.map((r, i) => (
+              <RestaurantCard
+                key={r.id}
+                r={r}
+                reversed={i % 2 !== 0}
+                onReserve={handleReserve}
+                reserveLabel={d.reserveBtn}
+                dressCodeLabel={d.dressCode}
+              />
             ))}
           </div>
         </section>
@@ -173,7 +121,7 @@ export default function DiningPage() {
         <section className={styles.amenities}>
           <Reveal>
             <div className={styles.amenitiesInner}>
-              {["In-Room Dining", "Chef's Table", 'Private Events', 'Sommelier Service'].map((item) => (
+              {d.amenities.map((item) => (
                 <div key={item} className={styles.amenityItem}>
                   <span className={styles.amenityTitle}>{item}</span>
                 </div>
