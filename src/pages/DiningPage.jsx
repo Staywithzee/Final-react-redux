@@ -4,9 +4,41 @@ import { showNotification } from '../features/ui/uiSlice';
 import { PageWrapper } from '../components/PageWrapper/PageWrapper';
 import { Reveal } from '../components/Reveal/Reveal';
 import { ParallaxImage } from '../components/ParallaxImage/ParallaxImage';
+import { AccordionPanels } from '../components/AccordionPanels/AccordionPanels';
 import { slideLeft, slideRight } from '../utils/transitions';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 import styles from './DiningPage.module.css';
+
+const diningPanels = [
+  {
+    id: 'fine-dining',
+    tab: 'Fine Dining',
+    title: 'THE LUMIÈRE TABLE',
+    imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80',
+    exploreLink: '/dining',
+  },
+  {
+    id: 'rooftop',
+    tab: 'Rooftop Bar',
+    title: 'TERRASSE SKY LOUNGE',
+    imageUrl: 'https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=1200&q=80',
+    exploreLink: '/dining',
+  },
+  {
+    id: 'breakfast',
+    tab: 'Breakfast',
+    title: 'MORNING TABLE',
+    imageUrl: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80',
+    exploreLink: '/dining',
+  },
+  {
+    id: 'private',
+    tab: 'Private Events',
+    title: 'EXCLUSIVE DINING',
+    imageUrl: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=1200&q=80',
+    exploreLink: '/dining',
+  },
+];
 
 const restaurants = [
   {
@@ -16,7 +48,7 @@ const restaurants = [
     hours: 'Dinner: 18:30 – 22:30 · Closed Mondays',
     description:
       'Our flagship restaurant, helmed by Executive Chef Étienne Bellard, presents a symphony of contemporary French gastronomy. Each dish tells a story of provenance and precision — a Michelin experience that begins with the first glance at the menu.',
-    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
     tags: ['Michelin Star', 'Tasting Menu', 'Wine Pairing', 'Private Dining'],
     dresscode: 'Smart Elegant',
   },
@@ -27,7 +59,7 @@ const restaurants = [
     hours: 'Daily: 17:00 – 01:00',
     description:
       'Perched on the 12th floor with panoramic city views, Terrasse is where golden hour lingers longest. Sip handcrafted cocktails as the city transitions from day to night — an intimate experience for two or a sophisticated gathering for many.',
-    image: 'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=800&q=80',
     tags: ['Cocktail Bar', 'Panoramic Views', 'Live Jazz Thursdays', 'Small Plates'],
     dresscode: 'Smart Casual',
   },
@@ -124,6 +156,9 @@ export default function DiningPage() {
             </div>
           </Reveal>
         </section>
+
+        {/* Dining accordion */}
+        <AccordionPanels panels={diningPanels} />
 
         {/* Restaurants */}
         <section className={styles.restaurants}>

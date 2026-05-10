@@ -6,18 +6,18 @@ import { scaleIn, staggerContainer } from '../utils/transitions';
 import styles from './GalleryPage.module.css';
 
 const ALL_IMAGES = [
-  { id: 1,  src: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80',  alt: 'Hotel Lobby',     category: 'Facilities' },
-  { id: 2,  src: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80', alt: 'Deluxe Suite',    category: 'Rooms' },
-  { id: 3,  src: 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&q=80', alt: 'Pool View',       category: 'Facilities' },
-  { id: 4,  src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80', alt: 'Fine Dining',     category: 'Dining' },
-  { id: 5,  src: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80', alt: 'Superior Room',   category: 'Rooms' },
-  { id: 6,  src: 'https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=800&q=80',    alt: 'Rooftop Bar',     category: 'Dining' },
-  { id: 7,  src: 'https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=800&q=80', alt: 'Hotel Exterior',  category: 'Facilities' },
-  { id: 8,  src: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80', alt: 'Villa Suite',     category: 'Rooms' },
-  { id: 9,  src: 'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=800&q=80', alt: 'Spa Treatment',   category: 'Facilities' },
-  { id: 10, src: 'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80', alt: 'Penthouse Suite', category: 'Rooms' },
-  { id: 11, src: 'https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?w=800&q=80', alt: 'Breakfast',       category: 'Dining' },
-  { id: 12, src: 'https://images.unsplash.com/photo-1592229505726-ca121723b8ef?w=800&q=80', alt: 'Infinity Pool',   category: 'Facilities' },
+  { id: 1,  src: 'https://images.unsplash.com/photo-1591088398332-8a7791972843?w=800&q=80',  alt: 'Hotel Lobby',     category: 'Facilities' },
+  { id: 2,  src: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800&q=80',  alt: 'Deluxe Suite',    category: 'Rooms' },
+  { id: 3,  src: 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&q=80',  alt: 'Pool View',       category: 'Facilities' },
+  { id: 4,  src: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',  alt: 'Fine Dining',     category: 'Dining' },
+  { id: 5,  src: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=800&q=80',  alt: 'Superior Room',   category: 'Rooms' },
+  { id: 6,  src: 'https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=800&q=80',  alt: 'Rooftop Bar',     category: 'Dining' },
+  { id: 7,  src: 'https://images.unsplash.com/photo-1606402179428-a57976d71fa4?w=800&q=80',  alt: 'Hotel Exterior',  category: 'Facilities' },
+  { id: 8,  src: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80',  alt: 'Villa Suite',     category: 'Rooms' },
+  { id: 9,  src: 'https://images.unsplash.com/photo-1564078516393-cf04bd966897?w=800&q=80',  alt: 'Spa Treatment',   category: 'Facilities' },
+  { id: 10, src: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&q=80',  alt: 'Penthouse Suite', category: 'Rooms' },
+  { id: 11, src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80',  alt: 'Fine Dining',     category: 'Dining' },
+  { id: 12, src: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80',     alt: 'Infinity Pool',   category: 'Facilities' },
 ];
 
 const CATEGORIES = ['All', 'Rooms', 'Dining', 'Facilities'];

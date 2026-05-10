@@ -235,9 +235,8 @@ export default function RoomDetailPage() {
             <motion.button
               className={styles.bookBtn}
               onClick={handleBook}
-              disabled={!room.available}
-              whileHover={{ scale: room.available ? 1.02 : 1 }}
-              whileTap={{ scale: room.available ? 0.98 : 1 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
               {room.available ? 'Reserve This Room' : 'Currently Unavailable'}
             </motion.button>

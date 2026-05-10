@@ -6,14 +6,44 @@ import { useDebounce } from '../../hooks/useDebounce';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PageWrapper } from '../../components/PageWrapper/PageWrapper';
-import { Reveal } from '../../components/Reveal/Reveal';
-import RoomCard from '../../components/RoomCard/RoomCard';
+import { AccordionPanels } from '../../components/AccordionPanels/AccordionPanels';
+import { RoomListItem } from '../../components/RoomListItem/RoomListItem';
 import SkeletonCard from '../../components/SkeletonCard/SkeletonCard';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
-import { staggerItem } from '../../utils/transitions';
 import styles from './RoomsPage.module.css';
 
 const CATEGORIES = ['All', 'Suite', 'Deluxe', 'Standard', 'Villa'];
+
+const roomCategoryPanels = [
+  {
+    id: 'suite',
+    tab: 'Suite',
+    title: 'LUMIÈRE SUITE',
+    imageUrl: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=1200&q=80',
+    exploreLink: '/rooms',
+  },
+  {
+    id: 'deluxe',
+    tab: 'Deluxe',
+    title: 'DELUXE ROOM',
+    imageUrl: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=1200&q=80',
+    exploreLink: '/rooms',
+  },
+  {
+    id: 'villa',
+    tab: 'Villa',
+    title: 'PRIVATE VILLA',
+    imageUrl: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=80',
+    exploreLink: '/rooms',
+  },
+  {
+    id: 'standard',
+    tab: 'Standard',
+    title: 'CLASSIC ROOM',
+    imageUrl: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=1200&q=80',
+    exploreLink: '/rooms',
+  },
+];
 
 export default function RoomsPage() {
   const dispatch = useDispatch();
@@ -37,8 +67,8 @@ export default function RoomsPage() {
             <p className={styles.eyebrow}>Accommodations</p>
             <h1 className={styles.title}>Rooms & Suites</h1>
           </div>
-          <div className={styles.grid}>
-            {[...Array(6)].map((_, i) => (
+          <div className={styles.skeletonList}>
+            {[...Array(4)].map((_, i) => (
               <SkeletonCard key={i} />
             ))}
           </div>
@@ -63,16 +93,16 @@ export default function RoomsPage() {
   return (
     <PageWrapper>
       <div className={styles.page}>
-        <Reveal>
-          <div className={styles.header}>
+        {/* Category showcase accordion */}
+        <div className={styles.accordionSection}>
+          <div className={styles.accordionHeader}>
             <p className={styles.eyebrow}>Accommodations</p>
             <h1 className={styles.title}>Rooms & Suites</h1>
-            <p className={styles.subtitle}>
-              Choose from our carefully curated collection of rooms and suites
-            </p>
           </div>
-        </Reveal>
+          <AccordionPanels panels={roomCategoryPanels} />
+        </div>
 
+        {/* Filter + search controls */}
         <div className={styles.controls}>
           <div className={styles.filters}>
             {CATEGORIES.map((cat) => (
@@ -100,6 +130,7 @@ export default function RoomsPage() {
           </div>
         </div>
 
+        {/* Room list */}
         {filteredRooms.length === 0 ? (
           <motion.div
             className={styles.empty}
@@ -109,22 +140,13 @@ export default function RoomsPage() {
             <p className={styles.emptyText}>No rooms match your current search or filter.</p>
           </motion.div>
         ) : (
-          <motion.div className={styles.grid} layout>
-            <AnimatePresence mode="popLayout">
-              {filteredRooms.map((room) => (
-                <motion.div
-                  key={room.id}
-                  layout
-                  variants={staggerItem}
-                  initial="hidden"
-                  animate="visible"
-                  exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-                >
-                  <RoomCard room={room} />
-                </motion.div>
+          <div className={styles.list}>
+            <AnimatePresence mode="wait">
+              {filteredRooms.map((room, i) => (
+                <RoomListItem key={room.id} room={room} index={i} />
               ))}
             </AnimatePresence>
-          </motion.div>
+          </div>
         )}
       </div>
     </PageWrapper>

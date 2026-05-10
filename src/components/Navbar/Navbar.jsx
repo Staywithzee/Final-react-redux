@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import styles from './Navbar.module.css';
 
 const NAV_LINKS = [
@@ -8,117 +8,117 @@ const NAV_LINKS = [
   { to: '/rooms', label: 'Rooms' },
   { to: '/dining', label: 'Dining' },
   { to: '/gallery', label: 'Gallery' },
+  { to: '/booking', label: 'Book a Stay' },
   { to: '/admin', label: 'Admin' },
 ];
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { scrollY } = useScroll();
-
-  const navBg = useTransform(
-    scrollY,
-    [0, 80],
-    ['rgba(250,247,242,0)', 'rgba(250,247,242,0.97)']
-  );
-  const navShadow = useTransform(
-    scrollY,
-    [0, 80],
-    ['0 0 0 rgba(0,0,0,0)', '0 1px 20px rgba(44,40,32,0.08)']
-  );
 
   return (
-    <motion.header
-      className={styles.navbar}
-      style={{ backgroundColor: navBg, boxShadow: navShadow }}
-    >
-      <div className={styles.inner}>
-        <Link to="/" className={styles.logo}>
-          LUMIÈRE
-        </Link>
+    <>
+      {/* ── Segmented bar ─────────────────────────────────────── */}
+      <nav className={styles.nav}>
+        {/* MENU */}
+        <div className={styles.segment}>
+          <button
+            className={styles.menuBtn}
+            onClick={() => setMenuOpen(true)}
+            aria-label="Open navigation menu"
+          >
+            <span className={styles.menuLines} />
+            MENU
+          </button>
+        </div>
 
-        <nav className={`${styles.links} ${menuOpen ? styles.open : ''}`}>
-          {NAV_LINKS.map(({ to, label, end }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              className={({ isActive }) => `${styles.link} ${isActive ? styles.active : ''}`}
-              onClick={() => setMenuOpen(false)}
-            >
-              {({ isActive }) => (
-                <>
-                  {label}
-                  {isActive && (
-                    <motion.span
-                      layoutId="navUnderline"
-                      className={styles.underline}
-                    />
-                  )}
-                </>
-              )}
-            </NavLink>
-          ))}
-        </nav>
+        <div className={styles.divider} />
 
-        <Link to="/booking" className={styles.cta} onClick={() => setMenuOpen(false)}>
-          Book Now
-        </Link>
+        {/* Language — hidden on mobile */}
+        <div className={`${styles.segment} ${styles.segHide}`}>
+          <span className={styles.lang}>EN</span>
+          <span className={styles.langSlash}>/</span>
+          <span className={`${styles.lang} ${styles.langOn}`}>FR</span>
+        </div>
 
-        <button
-          className={styles.hamburger}
-          onClick={() => setMenuOpen((o) => !o)}
-          aria-label="Toggle menu"
-        >
-          <motion.span
-            className={styles.bar}
-            animate={menuOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
-            transition={{ duration: 0.2 }}
-          />
-          <motion.span
-            className={styles.bar}
-            animate={menuOpen ? { opacity: 0 } : { opacity: 1 }}
-            transition={{ duration: 0.2 }}
-          />
-          <motion.span
-            className={styles.bar}
-            animate={menuOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
-            transition={{ duration: 0.2 }}
-          />
-        </button>
-      </div>
+        <div className={`${styles.divider} ${styles.divHide}`} />
 
-      {/* Mobile menu */}
+        {/* Logo — center */}
+        <div className={`${styles.segment} ${styles.segCenter}`}>
+          <Link to="/" className={styles.logo}>Lumière</Link>
+        </div>
+
+        <div className={`${styles.divider} ${styles.divHide}`} />
+
+        {/* Dining link — hidden on mobile */}
+        <div className={`${styles.segment} ${styles.segHide}`}>
+          <NavLink to="/dining" className={styles.navLink}>DINING</NavLink>
+        </div>
+
+        <div className={styles.divider} />
+
+        {/* Booking CTA */}
+        <div className={`${styles.segment} ${styles.segBook}`}>
+          <Link to="/booking" className={styles.bookingLink}>
+            BOOKING <span className={styles.bookArrow}>→</span>
+          </Link>
+        </div>
+      </nav>
+
+      {/* ── Fullscreen overlay menu ────────────────────────────── */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            className={styles.mobileMenu}
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className={styles.overlay}
+            initial={{ clipPath: 'inset(0 0 100% 0)' }}
+            animate={{ clipPath: 'inset(0 0 0% 0)' }}
+            exit={{ clipPath: 'inset(0 0 100% 0)' }}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
           >
-            {NAV_LINKS.map(({ to, label, end }, i) => (
-              <motion.div
-                key={to}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.05, duration: 0.3 }}
-              >
-                <NavLink
-                  to={to}
-                  end={end}
-                  className={({ isActive }) =>
-                    `${styles.mobileLink} ${isActive ? styles.active : ''}`
-                  }
-                  onClick={() => setMenuOpen(false)}
+            <button
+              className={styles.overlayClose}
+              onClick={() => setMenuOpen(false)}
+              aria-label="Close menu"
+            >
+              ✕ CLOSE
+            </button>
+
+            <nav className={styles.overlayNav}>
+              {NAV_LINKS.map(({ to, label, end }, i) => (
+                <motion.div
+                  key={to}
+                  initial={{ opacity: 0, x: -32 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{
+                    delay: 0.25 + i * 0.07,
+                    duration: 0.5,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
                 >
-                  {label}
-                </NavLink>
-              </motion.div>
-            ))}
+                  <NavLink
+                    to={to}
+                    end={end}
+                    className={({ isActive }) =>
+                      `${styles.overlayLink} ${isActive ? styles.overlayActive : ''}`
+                    }
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <span className={styles.overlayIdx}>0{i + 1}</span>
+                    {label}
+                  </NavLink>
+                </motion.div>
+              ))}
+            </nav>
+
+            <div className={styles.overlayBottom}>
+              <p className={styles.overlayTagline}>Established 1924 · Paris</p>
+              <div className={styles.overlayContacts}>
+                <span>+33 1 42 86 87 88</span>
+                <span>reservations@lumiere.com</span>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.header>
+    </>
   );
 }

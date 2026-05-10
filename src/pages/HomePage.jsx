@@ -10,6 +10,7 @@ import {
 } from 'framer-motion';
 import { useGetRoomsQuery } from '../features/rooms/roomsApi';
 import { PageWrapper } from '../components/PageWrapper/PageWrapper';
+import { AccordionPanels } from '../components/AccordionPanels/AccordionPanels';
 import RoomCard from '../components/RoomCard/RoomCard';
 import SkeletonCard from '../components/SkeletonCard/SkeletonCard';
 import styles from './HomePage.module.css';
@@ -46,6 +47,37 @@ const testimonialVariants = {
 };
 
 // ─── Static Data ──────────────────────────────────────────────────────────────
+
+const activitiesPanels = [
+  {
+    id: 'wellness',
+    tab: 'Wellness',
+    title: 'SPA & WELLNESS RETREAT',
+    imageUrl: 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=1200&q=80',
+    exploreLink: '/rooms',
+  },
+  {
+    id: 'dining',
+    tab: 'Fine Dining',
+    title: 'THE LUMIÈRE TABLE',
+    imageUrl: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80',
+    exploreLink: '/dining',
+  },
+  {
+    id: 'rooms',
+    tab: 'Luxury Rooms',
+    title: 'CURATED SUITES',
+    imageUrl: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=1200&q=80',
+    exploreLink: '/rooms',
+  },
+  {
+    id: 'concierge',
+    tab: 'Concierge',
+    title: 'PERSONALISED SERVICE',
+    imageUrl: 'https://images.unsplash.com/photo-1606402179428-a57976d71fa4?w=1200&q=80',
+    exploreLink: '/booking',
+  },
+];
 
 const features = [
   { icon: '🍽', title: 'Fine Dining', desc: 'Michelin-starred cuisine by our executive chef' },
@@ -157,6 +189,9 @@ export default function HomePage() {
   // Hero parallax background
   const heroY = useTransform(scrollY, [0, 800], prefersReduced ? [0, 0] : [0, -180]);
 
+  // Giant bg text parallax
+  const heroBgTextY = useTransform(scrollY, [0, 600], prefersReduced ? ['0%', '0%'] : ['0%', '18%']);
+
   // Section view refs
   const featuresRef = useRef(null);
   const featuresInView = useInView(featuresRef, { once: true, margin: '-80px' });
@@ -215,6 +250,15 @@ export default function HomePage() {
           <motion.div className={styles.heroBg} style={{ y: heroY }} />
           <div className={styles.heroOverlay} />
 
+          {/* Giant background text */}
+          <motion.div
+            className={styles.heroBgText}
+            style={{ y: heroBgTextY }}
+            aria-hidden="true"
+          >
+            LUMIÈRE
+          </motion.div>
+
           <div className={styles.heroContent}>
             <motion.p
               className={styles.heroEyebrow}
@@ -269,7 +313,7 @@ export default function HomePage() {
             </motion.div>
           </div>
 
-          {/* Bouncing scroll indicator */}
+          {/* Scroll indicator */}
           <motion.div
             className={styles.heroScroll}
             initial={{ opacity: 0 }}
@@ -282,6 +326,43 @@ export default function HomePage() {
               transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
             />
             <span className={styles.scrollLabel}>Scroll</span>
+          </motion.div>
+
+          {/* Bottom booking bar */}
+          <motion.div
+            className={styles.bookingBar}
+            initial={{ y: 60, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 1.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className={styles.bookingField}>
+              <label htmlFor="heroDate">DATE</label>
+              <input id="heroDate" type="date" className={styles.bookingInput} />
+            </div>
+            <div className={styles.bookingDivider} />
+            <div className={styles.bookingField}>
+              <label htmlFor="heroType">ROOM TYPE</label>
+              <select id="heroType" className={styles.bookingSelect}>
+                <option value="">All Types</option>
+                <option value="Suite">Suite</option>
+                <option value="Deluxe">Deluxe</option>
+                <option value="Villa">Villa</option>
+                <option value="Standard">Standard</option>
+              </select>
+            </div>
+            <div className={styles.bookingDivider} />
+            <div className={styles.bookingField}>
+              <label htmlFor="heroGuests">GUESTS</label>
+              <select id="heroGuests" className={styles.bookingSelect}>
+                <option value="1">1 Guest</option>
+                <option value="2">2 Guests</option>
+                <option value="3">3 Guests</option>
+                <option value="4">4+ Guests</option>
+              </select>
+            </div>
+            <Link to="/booking" className={styles.bookingBarBtn}>
+              BOOKING →
+            </Link>
           </motion.div>
         </section>
 
@@ -319,6 +400,17 @@ export default function HomePage() {
               </motion.div>
             ))}
           </motion.div>
+        </section>
+
+        {/* ── ACTIVITIES ───────────────────────────────────────────────── */}
+        <section className={styles.activitiesSection}>
+          <div className={styles.activitiesHeader}>
+            <p className={styles.activitiesEyebrow}>Experiences</p>
+            <h2 className={styles.activitiesTitle}>
+              Everything You&nbsp;Need,<br />Under One Roof.
+            </h2>
+          </div>
+          <AccordionPanels panels={activitiesPanels} />
         </section>
 
         {/* ── ROOMS PREVIEW ────────────────────────────────────────────── */}
@@ -429,7 +521,7 @@ export default function HomePage() {
             >
               <div className={styles.parallaxWrap} ref={aboutImageRef}>
                 <motion.img
-                  src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80"
+                  src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800&q=80"
                   alt="Lumière Hotel Interior"
                   className={`${styles.aboutImg} ${styles.parallaxEl}`}
                   style={{ y: aboutImgY }}

@@ -1,0 +1,172 @@
+.wrapper {
+  width: 100%;
+  background: var(--charcoal);
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 56px;
+  padding: 32px 40px 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  flex-wrap: wrap;
+}
+
+.tab {
+  position: relative;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tab:hover {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.tabActive {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 500;
+}
+
+/* Sliding circle indicator */
+.tabCircle {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* Image panel row */
+.panelRow {
+  display: flex;
+  height: 520px;
+  overflow: hidden;
+}
+
+.panel {
+  position: relative;
+  flex-grow: 1;
+  overflow: hidden;
+  min-width: 56px;
+}
+
+/* Background image */
+.panelBg {
+  position: absolute;
+  inset: -10%;
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+}
+
+/* Dark gradient overlay */
+.panelOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(20, 18, 15, 0.88) 0%,
+    rgba(20, 18, 15, 0.12) 50%,
+    transparent 100%
+  );
+}
+
+/* Active panel content */
+.panelContent {
+  position: absolute;
+  bottom: 32px;
+  left: 32px;
+  right: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.panelTitle {
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+}
+
+.exploreBtn {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+.exploreBtn:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+/* Slim vertical label on inactive panels */
+.slimLabel {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) rotate(90deg);
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  transform-origin: center;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .panelRow {
+    height: 380px;
+  }
+
+  .tabs {
+    gap: 28px;
+    padding: 24px 20px 20px;
+  }
+
+  .tab {
+    font-size: 0.65rem;
+    gap: 7px;
+  }
+
+  .tabCircle {
+    width: 20px;
+    height: 20px;
+  }
+
+  .panelContent {
+    bottom: 20px;
+    left: 16px;
+    right: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

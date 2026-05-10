@@ -1,6 +1,6 @@
 import { AnimatePresence } from 'framer-motion';
 import { useLocation, Routes, Route } from 'react-router-dom';
-import { useSmoothScroll } from './hooks/useSmoothScroll';
+import { useSmoothScroll, lenisInstance } from './hooks/useSmoothScroll';
 import { ScrollProgress } from './components/ScrollProgress/ScrollProgress';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
@@ -15,6 +15,21 @@ import BookingPage from './features/booking/BookingPage';
 import AdminPage from './features/admin/AdminPage';
 import RoomFormPage from './features/admin/RoomFormPage';
 
+// Prevent browser from restoring scroll position on navigation
+if (typeof window !== 'undefined') {
+  window.history.scrollRestoration = 'manual';
+}
+
+function scrollToTop() {
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  if (lenisInstance) {
+    lenisInstance.stop();
+    lenisInstance.scrollTo(0, { immediate: true, force: true });
+    lenisInstance.start();
+  }
+}
+
 export default function App() {
   useSmoothScroll();
   const location = useLocation();
@@ -23,7 +38,7 @@ export default function App() {
     <>
       <ScrollProgress />
       <Navbar />
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence mode="wait" initial={false} onExitComplete={scrollToTop}>
         <Routes location={location} key={location.pathname}>
           <Route path="/"                       element={<HomePage />} />
           <Route path="/rooms"                  element={<RoomsPage />} />
