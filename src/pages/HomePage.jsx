@@ -9,6 +9,9 @@ import {
   useMotionValue,
 } from 'framer-motion';
 import { useGetRoomsQuery } from '../features/rooms/roomsApi';
+import { useLanguage } from '../context/LanguageContext';
+import { PageWrapper } from '../components/PageWrapper/PageWrapper';
+import { AccordionPanels } from '../components/AccordionPanels/AccordionPanels';
 import RoomCard from '../components/RoomCard/RoomCard';
 import SkeletonCard from '../components/SkeletonCard/SkeletonCard';
 import styles from './HomePage.module.css';
@@ -45,13 +48,6 @@ const testimonialVariants = {
 };
 
 // ─── Static Data ──────────────────────────────────────────────────────────────
-
-const features = [
-  { icon: '🍽', title: 'Fine Dining', desc: 'Michelin-starred cuisine by our executive chef' },
-  { icon: '✦', title: 'Spa & Wellness', desc: 'Rejuvenate in our award-winning sanctuary' },
-  { icon: '◇', title: 'Infinity Pool', desc: 'Panoramic views over the cityscape' },
-  { icon: '❧', title: 'Concierge', desc: 'Personalised service around the clock' },
-];
 
 const testimonials = [
   {
@@ -141,6 +137,9 @@ function MagneticButton({ children, to }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function HomePage() {
+  const { t } = useLanguage();
+  const h = t.home;
+
   const { data: rooms, isLoading } = useGetRoomsQuery();
   const featured = rooms ? rooms.slice(0, 3) : [];
 
@@ -155,6 +154,9 @@ export default function HomePage() {
 
   // Hero parallax background
   const heroY = useTransform(scrollY, [0, 800], prefersReduced ? [0, 0] : [0, -180]);
+
+  // Giant bg text parallax
+  const heroBgTextY = useTransform(scrollY, [0, 600], prefersReduced ? ['0%', '0%'] : ['0%', '18%']);
 
   // Section view refs
   const featuresRef = useRef(null);
@@ -199,7 +201,7 @@ export default function HomePage() {
   const ctaInView = useInView(ctaRef, { once: true, margin: '-80px' });
 
   return (
-    <>
+    <PageWrapper>
       {/* Scroll progress bar */}
       <motion.div className={styles.progressBar} style={{ scaleX }} />
 
@@ -214,6 +216,15 @@ export default function HomePage() {
           <motion.div className={styles.heroBg} style={{ y: heroY }} />
           <div className={styles.heroOverlay} />
 
+          {/* Giant background text */}
+          <motion.div
+            className={styles.heroBgText}
+            style={{ y: heroBgTextY }}
+            aria-hidden="true"
+          >
+            LUMIÈRE
+          </motion.div>
+
           <div className={styles.heroContent}>
             <motion.p
               className={styles.heroEyebrow}
@@ -221,7 +232,7 @@ export default function HomePage() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.8 }}
             >
-              Established 1924 · Paris
+              {h.hero.eyebrow}
             </motion.p>
 
             {/* Character-split title */}
@@ -250,7 +261,7 @@ export default function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.9, duration: 0.8 }}
             >
-              Where timeless elegance meets modern refinement
+              {h.hero.subtitle}
             </motion.p>
 
             <motion.div
@@ -260,15 +271,15 @@ export default function HomePage() {
               transition={{ delay: 1.1, duration: 0.6 }}
             >
               <Link to="/rooms" className={styles.ctaPrimary}>
-                Explore Rooms
+                {h.hero.cta1}
               </Link>
               <Link to="/booking" className={styles.ctaSecondary}>
-                Book Now
+                {h.hero.cta2}
               </Link>
             </motion.div>
           </div>
 
-          {/* Bouncing scroll indicator */}
+          {/* Scroll indicator */}
           <motion.div
             className={styles.heroScroll}
             initial={{ opacity: 0 }}
@@ -280,7 +291,43 @@ export default function HomePage() {
               animate={{ y: [0, 10, 0] }}
               transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
             />
-            <span className={styles.scrollLabel}>Scroll</span>
+            <span className={styles.scrollLabel}>{h.hero.scroll}</span>
+          </motion.div>
+
+          {/* Bottom booking bar */}
+          <motion.div
+            className={styles.bookingBar}
+            initial={{ y: 60, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 1.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className={styles.bookingField}>
+              <label htmlFor="heroDate">{h.hero.dateLabel}</label>
+              <input id="heroDate" type="date" className={styles.bookingInput} />
+            </div>
+            <div className={styles.bookingDivider} />
+            <div className={styles.bookingField}>
+              <label htmlFor="heroType">{h.hero.roomTypeLabel}</label>
+              <select id="heroType" className={styles.bookingSelect}>
+                <option value="">{h.hero.allTypes}</option>
+                <option value="Suite">Suite</option>
+                <option value="Deluxe">Deluxe</option>
+                <option value="Villa">Villa</option>
+                <option value="Standard">Standard</option>
+              </select>
+            </div>
+            <div className={styles.bookingDivider} />
+            <div className={styles.bookingField}>
+              <label htmlFor="heroGuests">{h.hero.guestsLabel}</label>
+              <select id="heroGuests" className={styles.bookingSelect}>
+                {h.hero.guestOptions.map((opt, i) => (
+                  <option key={i} value={i + 1}>{opt}</option>
+                ))}
+              </select>
+            </div>
+            <Link to="/booking" className={styles.bookingBarBtn}>
+              {h.hero.bookingBtn}
+            </Link>
           </motion.div>
         </section>
 
@@ -293,7 +340,7 @@ export default function HomePage() {
             initial="hidden"
             animate={featuresInView ? 'visible' : 'hidden'}
           >
-            {features.map((f) => (
+            {h.features.map((f) => (
               <motion.div
                 key={f.title}
                 className={styles.feature}
@@ -320,6 +367,17 @@ export default function HomePage() {
           </motion.div>
         </section>
 
+        {/* ── ACTIVITIES ───────────────────────────────────────────────── */}
+        <section className={styles.activitiesSection}>
+          <div className={styles.activitiesHeader}>
+            <p className={styles.activitiesEyebrow}>{h.activities.eyebrow}</p>
+            <h2 className={styles.activitiesTitle}>
+              {h.activities.title1}<br />{h.activities.title2}
+            </h2>
+          </div>
+          <AccordionPanels panels={h.activities.panels} />
+        </section>
+
         {/* ── ROOMS PREVIEW ────────────────────────────────────────────── */}
         <section className={styles.roomsPreview}>
           <div ref={roomsHeadRef} className={styles.sectionHead}>
@@ -329,7 +387,7 @@ export default function HomePage() {
               animate={roomsHeadInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.6 }}
             >
-              Accommodations
+              {h.roomsSection.eyebrow}
             </motion.p>
             <div className={styles.clipWrap}>
               <motion.h2
@@ -340,7 +398,7 @@ export default function HomePage() {
                 }
                 transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
               >
-                Our Curated Rooms & Suites
+                {h.roomsSection.title}
               </motion.h2>
             </div>
             <motion.p
@@ -349,8 +407,7 @@ export default function HomePage() {
               animate={roomsHeadInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.35 }}
             >
-              Each room is a testament to refined taste — handcrafted furniture, bespoke
-              textiles, and a view worth waking up for.
+              {h.roomsSection.sub}
             </motion.p>
           </div>
 
@@ -380,7 +437,7 @@ export default function HomePage() {
             transition={{ delay: 0.5, duration: 0.6 }}
           >
             <Link to="/rooms" className={styles.viewAllBtn}>
-              View All Rooms
+              {h.roomsSection.viewAll}
             </Link>
           </motion.div>
         </section>
@@ -395,27 +452,19 @@ export default function HomePage() {
               animate={aboutInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
-              <p className={styles.eyebrow}>Our Story</p>
-              <h2 className={styles.aboutTitle}>A Century of Gracious Hospitality</h2>
-              <p className={styles.aboutBody}>
-                Founded in 1924, Lumière has welcomed artists, diplomats, and discerning
-                travellers for over a century. Our philosophy is simple: every guest deserves
-                an experience that transcends accommodation and becomes a cherished memory.
-              </p>
-              <p className={styles.aboutBody}>
-                The hotel blends Haussmann grandeur with contemporary comfort — original gilded
-                mouldings alongside state-of-the-art amenities, ensuring your stay is both
-                timeless and flawless.
-              </p>
+              <p className={styles.eyebrow}>{h.about.eyebrow}</p>
+              <h2 className={styles.aboutTitle}>{h.about.title}</h2>
+              <p className={styles.aboutBody}>{h.about.body1}</p>
+              <p className={styles.aboutBody}>{h.about.body2}</p>
               <Link to="/rooms" className={styles.aboutCta}>
-                Discover Our Rooms
+                {h.about.cta}
               </Link>
 
               {/* Animated stat counters */}
               <div className={styles.counters}>
-                <AnimatedCounter to={48} label="Luxury Suites" />
-                <AnimatedCounter to={3} label="Restaurants" />
-                <AnimatedCounter to={100} label="Years Legacy" />
+                <AnimatedCounter to={48}  label={h.about.counterLabels[0]} />
+                <AnimatedCounter to={3}   label={h.about.counterLabels[1]} />
+                <AnimatedCounter to={100} label={h.about.counterLabels[2]} />
               </div>
             </motion.div>
 
@@ -428,7 +477,7 @@ export default function HomePage() {
             >
               <div className={styles.parallaxWrap} ref={aboutImageRef}>
                 <motion.img
-                  src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80"
+                  src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800&q=80"
                   alt="Lumière Hotel Interior"
                   className={`${styles.aboutImg} ${styles.parallaxEl}`}
                   style={{ y: aboutImgY }}
@@ -471,7 +520,7 @@ export default function HomePage() {
               animate={testimonialsInView ? { opacity: 1 } : {}}
               transition={{ duration: 0.6 }}
             >
-              Guest Experiences
+              {h.testimonials.eyebrow}
             </motion.p>
             <div className={styles.clipWrap}>
               <motion.h2
@@ -482,7 +531,7 @@ export default function HomePage() {
                 }
                 transition={{ duration: 0.9, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               >
-                What Our Guests Say
+                {h.testimonials.title}
               </motion.h2>
             </div>
           </div>
@@ -519,7 +568,7 @@ export default function HomePage() {
             >
               {[...Array(4)].map((_, i) => (
                 <span key={i} className={styles.marqueeText}>
-                  LUMIÈRE &nbsp;·&nbsp; LUXURY AWAITS &nbsp;·&nbsp; RESERVE NOW &nbsp;·&nbsp;{' '}
+                  {h.marquee}
                 </span>
               ))}
             </motion.div>
@@ -531,15 +580,13 @@ export default function HomePage() {
             animate={ctaInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
-            <p className={`${styles.eyebrow} ${styles.eyebrowGold}`}>Reservations</p>
-            <h2 className={styles.ctaBannerTitle}>Reserve Your Stay</h2>
-            <p className={styles.ctaBannerSub}>
-              From intimate getaways to grand celebrations — let us craft your perfect stay.
-            </p>
-            <MagneticButton to="/booking">Begin Your Journey</MagneticButton>
+            <p className={`${styles.eyebrow} ${styles.eyebrowGold}`}>{h.cta.eyebrow}</p>
+            <h2 className={styles.ctaBannerTitle}>{h.cta.title}</h2>
+            <p className={styles.ctaBannerSub}>{h.cta.sub}</p>
+            <MagneticButton to="/booking">{h.cta.btn}</MagneticButton>
           </motion.div>
         </section>
       </motion.main>
-    </>
+    </PageWrapper>
   );
 }

@@ -14,19 +14,28 @@
     />
     <style>
       :root {
-        --cream: #FAF7F2;
-        --cream-dark: #F2EDE4;
-        --warm-white: #FDFBF8;
-        --gold: #C9A96E;
-        --gold-dark: #A07840;
-        --charcoal: #2C2820;
-        --charcoal-mid: #4A4238;
-        --text-muted: #9C8E7E;
-        --border: rgba(201, 169, 110, 0.2);
-        --shadow: 0 4px 32px rgba(44, 40, 32, 0.08);
-        --radius: 2px;
+        /* ── Dark palette (Valora-inspired) ── */
+        --bg-primary:   #14120f;
+        --bg-secondary: #1c1a16;
+        --bg-card:      #211f1a;
+        --gold:         #C9A96E;
+        --gold-dark:    #A07840;
+        --gold-light:   #E2C99A;
+        --text-primary: rgba(255, 255, 255, 0.92);
+        --text-muted:   rgba(44, 40, 32, 0.45);
+        --border:       rgba(44, 40, 32, 0.1);
+        --shadow:       0 4px 32px rgba(0, 0, 0, 0.4);
+        --radius:       2px;
+
+        /* ── Legacy aliases (kept for existing components) ── */
+        --cream:        #f0e8d8;
+        --cream-dark:   #d8ccb8;
+        --warm-white:   #faf7f2;
+        --charcoal:     #2C2820;
+        --charcoal-mid: rgba(44, 40, 32, 0.58);
+
         --font-display: 'Cormorant Garamond', serif;
-        --font-body: 'Jost', sans-serif;
+        --font-body:    'Jost', sans-serif;
       }
 
       *, *::before, *::after {
@@ -41,8 +50,8 @@
 
       body {
         font-family: var(--font-body);
-        background: var(--warm-white);
-        color: var(--charcoal);
+        background: var(--bg-primary);
+        color: var(--text-primary);
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }

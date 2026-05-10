@@ -1,7 +1,6 @@
 .card {
-  background: #fff;
-  border: 1px solid transparent;
-  box-shadow: var(--shadow);
+  background: var(--bg-card, #211f1a);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   transition: border-color 0.25s, transform 0.25s;
   display: flex;
   flex-direction: column;
@@ -34,13 +33,14 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  background: rgba(44, 40, 32, 0.75);
-  color: #fff;
+  background: rgba(20, 18, 15, 0.8);
+  color: rgba(255, 255, 255, 0.7);
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 4px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .body {
@@ -53,33 +53,33 @@
 
 .category {
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 400;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--gold-dark);
+  color: var(--gold);
 }
 
 .name {
   font-family: var(--font-display);
   font-size: 1.35rem;
-  font-weight: 400;
-  color: var(--charcoal);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.9);
   margin: 0;
   line-height: 1.3;
 }
 
 .meta {
   font-family: var(--font-body);
-  font-size: 0.8rem;
-  color: var(--text-muted);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.38);
   display: flex;
   gap: 8px;
   align-items: center;
 }
 
 .dot {
-  color: var(--border);
+  color: rgba(255, 255, 255, 0.2);
 }
 
 .footer {
@@ -88,7 +88,7 @@
   justify-content: space-between;
   margin-top: auto;
   padding-top: 16px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .price {
@@ -100,30 +100,31 @@
 .amount {
   font-family: var(--font-display);
   font-size: 1.25rem;
-  font-weight: 400;
-  color: var(--charcoal);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .per {
   font-family: var(--font-body);
-  font-size: 0.75rem;
-  color: var(--text-muted);
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.32);
 }
 
 .btn {
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 400;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--charcoal);
+  color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
-  border: 1px solid var(--gold);
+  border: 1px solid rgba(201, 169, 110, 0.5);
   padding: 8px 16px;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .btn:hover {
   background: var(--gold);
-  color: var(--warm-white);
+  color: #14120f;
+  border-color: var(--gold);
 }

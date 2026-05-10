@@ -1,0 +1,150 @@
+.roomRow {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 48px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 52px 0;
+  align-items: center;
+}
+
+.roomInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.roomCategory {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.roomName {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.92);
+  margin: 0;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+}
+
+.roomMeta {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.38);
+  letter-spacing: 0.1em;
+  margin: 0;
+}
+
+.roomDesc {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.48);
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.detailsLink {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  padding-bottom: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  transition: color 0.2s, border-color 0.2s;
+}
+.detailsLink:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+.roomFacts {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  flex-wrap: wrap;
+}
+
+.roomPrice {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.88);
+  letter-spacing: 0.02em;
+}
+
+.roomPricePer {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.32);
+  letter-spacing: 0.1em;
+}
+
+.availBadge {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border: 1px solid;
+}
+.available {
+  color: rgba(201, 169, 110, 0.85);
+  border-color: rgba(201, 169, 110, 0.28);
+}
+.unavailable {
+  color: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Image strip */
+.imageStrip {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  gap: 4px;
+  height: 300px;
+  overflow: visible;
+}
+
+.stripImage {
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.stripImageTall {
+  margin-top: -36px;
+  height: calc(100% + 36px);
+}
+
+@media (max-width: 960px) {
+  .roomRow {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 40px 0;
+  }
+
+  .imageStrip {
+    height: 220px;
+  }
+
+  .stripImageTall {
+    margin-top: -24px;
+    height: calc(100% + 24px);
+  }
+}

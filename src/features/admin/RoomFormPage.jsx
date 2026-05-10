@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   useGetRoomByIdQuery,
   useAddRoomMutation,
@@ -8,22 +9,17 @@ import {
 } from '../rooms/roomsApi';
 import { showNotification } from '../ui/uiSlice';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import { PageWrapper } from '../../components/PageWrapper/PageWrapper';
+import { staggerContainer, staggerItem } from '../../utils/transitions';
 import styles from './RoomFormPage.module.css';
 
 const CATEGORIES = ['Standard', 'Deluxe', 'Suite', 'Villa'];
 
 const emptyForm = {
-  name: '',
-  category: 'Standard',
-  pricePerNight: '',
-  maxGuests: '',
-  size: '',
-  description: '',
-  imageUrl: '',
-  available: true,
+  name: '', category: 'Standard', pricePerNight: '', maxGuests: '',
+  size: '', description: '', imageUrl: '', available: true,
 };
 
-// Renders the actual form once data is available
 function FormContent({ existingRoom, isEdit }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -62,10 +58,7 @@ function FormContent({ existingRoom, isEdit }) {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
@@ -93,31 +86,33 @@ function FormContent({ existingRoom, isEdit }) {
         dispatch(showNotification({ message: 'Room added successfully.', type: 'success' }));
       }
       navigate(-1);
-    } catch {
-      dispatch(showNotification({ message: 'Operation failed. Please try again.', type: 'error' }));
+    } catch (err) {
+      console.error('Add/Edit room error:', err);
+      const msg = err?.data?.message || err?.error || `Error ${err?.status ?? ''}`.trim();
+      dispatch(showNotification({ message: msg || 'Operation failed. Please try again.', type: 'error' }));
     }
   };
 
   const isPending = isAdding || isUpdating;
 
+  const fields = [
+    { id: 'name',         label: 'Room Name *',              type: 'text',   placeholder: 'e.g. Deluxe Garden Suite' },
+    { id: 'pricePerNight',label: 'Price per Night (USD) *',  type: 'number', placeholder: 'e.g. 4500',  min: '1' },
+    { id: 'maxGuests',    label: 'Max Guests *',              type: 'number', placeholder: 'e.g. 2',     min: '1' },
+    { id: 'size',         label: 'Size (m²)',                 type: 'number', placeholder: 'e.g. 55',    min: '0' },
+    { id: 'imageUrl',     label: 'Image URL',                 type: 'url',    placeholder: 'https://images.unsplash.com/...' },
+  ];
+
   return (
     <form className={styles.form} onSubmit={handleSubmit} noValidate>
-      <div className={styles.grid}>
-        <div className={styles.fieldGroup}>
-          <label className={styles.label} htmlFor="name">Room Name *</label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            className={`${styles.input} ${errors.name ? styles.inputError : ''}`}
-            value={form.name}
-            onChange={handleChange}
-            placeholder="e.g. Deluxe Garden Suite"
-          />
-          {errors.name && <span className={styles.errorMsg}>{errors.name}</span>}
-        </div>
-
-        <div className={styles.fieldGroup}>
+      <motion.div
+        className={styles.grid}
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* Category select */}
+        <motion.div className={styles.fieldGroup} variants={staggerItem}>
           <label className={styles.label} htmlFor="category">Category *</label>
           <select
             id="category"
@@ -126,76 +121,44 @@ function FormContent({ existingRoom, isEdit }) {
             value={form.category}
             onChange={handleChange}
           >
-            {CATEGORIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
+            {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
-          {errors.category && <span className={styles.errorMsg}>{errors.category}</span>}
-        </div>
+          <AnimatePresence>
+            {errors.category && (
+              <motion.span className={styles.errorMsg} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                {errors.category}
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.div>
 
-        <div className={styles.fieldGroup}>
-          <label className={styles.label} htmlFor="pricePerNight">Price per Night (USD) *</label>
-          <input
-            id="pricePerNight"
-            name="pricePerNight"
-            type="number"
-            min="1"
-            className={`${styles.input} ${errors.pricePerNight ? styles.inputError : ''}`}
-            value={form.pricePerNight}
-            onChange={handleChange}
-            placeholder="e.g. 4500"
-          />
-          {errors.pricePerNight && (
-            <span className={styles.errorMsg}>{errors.pricePerNight}</span>
-          )}
-        </div>
+        {fields.map(({ id, label, type, placeholder, min }) => (
+          <motion.div key={id} className={styles.fieldGroup} variants={staggerItem}>
+            <label className={styles.label} htmlFor={id}>{label}</label>
+            <motion.div animate={errors[id] ? { x: [0, -8, 8, -6, 6, 0] } : {}} transition={{ duration: 0.4 }}>
+              <input
+                id={id}
+                name={id}
+                type={type}
+                min={min}
+                className={`${styles.input} ${errors[id] ? styles.inputError : ''}`}
+                value={form[id]}
+                onChange={handleChange}
+                placeholder={placeholder}
+              />
+            </motion.div>
+            <AnimatePresence>
+              {errors[id] && (
+                <motion.span className={styles.errorMsg} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                  {errors[id]}
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        ))}
+      </motion.div>
 
-        <div className={styles.fieldGroup}>
-          <label className={styles.label} htmlFor="maxGuests">Max Guests *</label>
-          <input
-            id="maxGuests"
-            name="maxGuests"
-            type="number"
-            min="1"
-            className={`${styles.input} ${errors.maxGuests ? styles.inputError : ''}`}
-            value={form.maxGuests}
-            onChange={handleChange}
-            placeholder="e.g. 2"
-          />
-          {errors.maxGuests && <span className={styles.errorMsg}>{errors.maxGuests}</span>}
-        </div>
-
-        <div className={styles.fieldGroup}>
-          <label className={styles.label} htmlFor="size">Size (m²)</label>
-          <input
-            id="size"
-            name="size"
-            type="number"
-            min="0"
-            className={styles.input}
-            value={form.size}
-            onChange={handleChange}
-            placeholder="e.g. 55"
-          />
-        </div>
-
-        <div className={styles.fieldGroup}>
-          <label className={styles.label} htmlFor="imageUrl">Image URL</label>
-          <input
-            id="imageUrl"
-            name="imageUrl"
-            type="url"
-            className={styles.input}
-            value={form.imageUrl}
-            onChange={handleChange}
-            placeholder="https://images.unsplash.com/..."
-          />
-        </div>
-      </div>
-
-      <div className={styles.fieldGroup}>
+      <motion.div className={styles.fieldGroup} variants={staggerItem} initial="hidden" animate="visible">
         <label className={styles.label} htmlFor="description">Description</label>
         <textarea
           id="description"
@@ -206,9 +169,9 @@ function FormContent({ existingRoom, isEdit }) {
           placeholder="Describe the room, its ambiance, and what makes it special..."
           rows={4}
         />
-      </div>
+      </motion.div>
 
-      <div className={styles.checkboxGroup}>
+      <motion.div className={styles.checkboxGroup} variants={staggerItem} initial="hidden" animate="visible">
         <input
           id="available"
           name="available"
@@ -220,20 +183,21 @@ function FormContent({ existingRoom, isEdit }) {
         <label htmlFor="available" className={styles.checkboxLabel}>
           Room is available for booking
         </label>
-      </div>
+      </motion.div>
 
       <div className={styles.formActions}>
-        <button
-          type="button"
-          className={styles.cancelBtn}
-          onClick={() => navigate(-1)}
-          disabled={isPending}
-        >
+        <button type="button" className={styles.cancelBtn} onClick={() => navigate(-1)} disabled={isPending}>
           Cancel
         </button>
-        <button type="submit" className={styles.submitBtn} disabled={isPending}>
+        <motion.button
+          type="submit"
+          className={styles.submitBtn}
+          disabled={isPending}
+          whileHover={{ scale: isPending ? 1 : 1.02 }}
+          whileTap={{ scale: isPending ? 1 : 0.98 }}
+        >
           {isPending ? 'Saving...' : isEdit ? 'Save Changes' : 'Add Room'}
-        </button>
+        </motion.button>
       </div>
     </form>
   );
@@ -243,33 +207,32 @@ export default function RoomFormPage() {
   const { id } = useParams();
   const isEdit = Boolean(id);
 
-  const { data: existingRoom, isLoading, isError } = useGetRoomByIdQuery(id, {
-    skip: !isEdit,
-  });
+  const { data: existingRoom, isLoading, isError } = useGetRoomByIdQuery(id, { skip: !isEdit });
 
   return (
-    <div className={styles.page}>
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <p className={styles.eyebrow}>Administration</p>
-          <h1 className={styles.title}>{isEdit ? 'Edit Room' : 'Add New Room'}</h1>
-        </div>
-
-        {isEdit && isLoading ? (
-          <div className={styles.loadingWrap}>
-            <div className={styles.spinner} />
+    <PageWrapper>
+      <div className={styles.page}>
+        <div className={styles.container}>
+          <div className={styles.header}>
+            <p className={styles.eyebrow}>Administration</p>
+            <h1 className={styles.title}>{isEdit ? 'Edit Room' : 'Add New Room'}</h1>
           </div>
-        ) : isEdit && isError ? (
-          <ErrorMessage message="Room not found." />
-        ) : (
-          // Key forces remount so useState initializer picks up existingRoom
-          <FormContent
-            key={existingRoom?.id ?? 'new'}
-            existingRoom={isEdit ? existingRoom : null}
-            isEdit={isEdit}
-          />
-        )}
+
+          {isEdit && isLoading ? (
+            <div className={styles.loadingWrap}>
+              <div className={styles.spinner} />
+            </div>
+          ) : isEdit && isError ? (
+            <ErrorMessage message="Room not found." />
+          ) : (
+            <FormContent
+              key={existingRoom?.id ?? 'new'}
+              existingRoom={isEdit ? existingRoom : null}
+              isEdit={isEdit}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 }

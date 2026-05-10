@@ -6,23 +6,23 @@ export const roomsApi = createApi({
   tagTypes: ['Room'],
   endpoints: (builder) => ({
     getRooms: builder.query({
-      query: () => '/rooms',
+      query: () => '/room',
       providesTags: ['Room'],
     }),
     getRoomById: builder.query({
-      query: (id) => `/rooms/${id}`,
+      query: (id) => `/room/${id}`,
       providesTags: (result, error, id) => [{ type: 'Room', id }],
     }),
     addRoom: builder.mutation({
-      query: (body) => ({ url: '/rooms', method: 'POST', body }),
+      query: (body) => ({ url: '/room', method: 'POST', body }),
       invalidatesTags: ['Room'],
     }),
     updateRoom: builder.mutation({
-      query: ({ id, ...body }) => ({ url: `/rooms/${id}`, method: 'PUT', body }),
+      query: ({ id, ...body }) => ({ url: `/room/${id}`, method: 'PUT', body }),
       invalidatesTags: (result, error, { id }) => [{ type: 'Room', id }, 'Room'],
     }),
     deleteRoom: builder.mutation({
-      query: (id) => ({ url: `/rooms/${id}`, method: 'DELETE' }),
+      query: (id) => ({ url: `/room/${id}`, method: 'DELETE' }),
       invalidatesTags: ['Room'],
     }),
   }),

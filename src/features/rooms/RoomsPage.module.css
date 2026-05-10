@@ -1,13 +1,17 @@
 .page {
   min-height: 100vh;
-  background: var(--warm-white);
-  padding: 120px 40px 80px;
+  background: #14120f;
 }
 
-.header {
-  max-width: 640px;
-  margin: 0 auto 56px;
-  text-align: center;
+/* ── ACCORDION HEADER ─────────────────────────────────────────────────────── */
+.accordionSection {
+  background: var(--charcoal);
+}
+
+.accordionHeader {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 100px 40px 48px;
 }
 
 .eyebrow {
@@ -15,30 +19,25 @@
   font-size: 0.65rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--gold-dark);
+  color: var(--gold);
   margin: 0 0 12px;
 }
 
 .title {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 400;
-  color: var(--charcoal);
-  margin: 0 0 12px;
-  letter-spacing: 0.03em;
-}
-
-.subtitle {
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  line-height: 1.7;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.9);
   margin: 0;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
 }
 
+/* ── CONTROLS ─────────────────────────────────────────────────────────────── */
 .controls {
   max-width: 1280px;
-  margin: 0 auto 40px;
+  margin: 0 auto;
+  padding: 40px 40px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -54,32 +53,39 @@
 
 .filterBtn {
   font-family: var(--font-body);
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 8px 18px;
   background: none;
-  border: 1px solid var(--border);
-  color: var(--charcoal-mid);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.4);
   cursor: pointer;
   transition: all 0.2s;
+  position: relative;
+}
+
+.tabIndicator {
+  position: absolute;
+  inset: -1px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  z-index: -1;
+}
+
+.filterLabel {
+  position: relative;
+  z-index: 1;
 }
 
 .filterBtn:hover {
-  border-color: var(--gold);
-  color: var(--charcoal);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .filterActive {
-  background: var(--charcoal);
-  border-color: var(--charcoal);
-  color: var(--cream);
-}
-
-.filterActive:hover {
-  background: var(--charcoal);
-  border-color: var(--charcoal);
-  color: var(--cream);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .searchWrap {
@@ -88,10 +94,10 @@
 
 .search {
   font-family: var(--font-body);
-  font-size: 0.85rem;
-  color: var(--charcoal);
-  background: var(--cream);
-  border: 1px solid var(--border);
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.82);
+  background: #1c1a16;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 10px 16px;
   width: 240px;
   outline: none;
@@ -99,55 +105,59 @@
 }
 
 .search::placeholder {
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.28);
 }
 
 .search:focus {
-  border-color: var(--gold);
+  border-color: rgba(201, 169, 110, 0.5);
 }
 
-.grid {
+/* ── ROOM LIST ─────────────────────────────────────────────────────────────── */
+.list {
   max-width: 1280px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 28px;
+  padding: 0 40px 80px;
+}
+
+.skeletonList {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 40px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
 }
 
 .empty {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 80px 0;
+  padding: 80px 40px;
   text-align: center;
 }
 
 .emptyText {
   font-family: var(--font-body);
   font-size: 0.9rem;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.35);
 }
 
-@media (max-width: 1024px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .page {
-    padding: 100px 24px 60px;
-  }
-
-  .grid {
-    grid-template-columns: 1fr;
+/* ── RESPONSIVE ───────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .accordionHeader {
+    padding: 88px 24px 40px;
   }
 
   .controls {
+    padding: 32px 24px 0;
     flex-direction: column;
     align-items: flex-start;
   }
 
   .search {
     width: 100%;
+  }
+
+  .list {
+    padding: 0 24px 60px;
   }
 }

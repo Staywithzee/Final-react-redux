@@ -1,6 +1,6 @@
 .page {
   min-height: 100vh;
-  background: var(--warm-white);
+  background: #14120f;
 }
 
 /* HERO */
@@ -8,7 +8,7 @@
   position: relative;
   height: 60vh;
   min-height: 400px;
-  background: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1600&q=85')
+  background: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600&q=85')
     center 40% / cover no-repeat;
   display: flex;
   align-items: center;
@@ -82,6 +82,7 @@
 /* RESTAURANTS */
 .restaurants {
   padding: 96px 40px;
+  background: #14120f;
 }
 
 .restaurantsInner {
@@ -141,15 +142,15 @@
 .restName {
   font-family: var(--font-display);
   font-size: clamp(1.8rem, 3vw, 2.5rem);
-  font-weight: 400;
-  color: var(--charcoal);
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.9);
   margin: 0;
 }
 
 .restDesc {
   font-family: var(--font-body);
   font-size: 0.88rem;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.48);
   line-height: 1.9;
   margin: 0;
 }
@@ -157,7 +158,7 @@
 .restHours {
   font-family: var(--font-body);
   font-size: 0.78rem;
-  color: var(--charcoal-mid);
+  color: rgba(255, 255, 255, 0.35);
   margin: 0;
   font-style: italic;
 }
@@ -170,11 +171,11 @@
 
 .tag {
   font-family: var(--font-body);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  border: 1px solid var(--border);
-  color: var(--charcoal-mid);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.42);
   padding: 5px 12px;
 }
 
@@ -186,7 +187,7 @@
 .dresscode {
   font-family: var(--font-body);
   font-size: 0.78rem;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.32);
 }
 
 .reserveBtn {
@@ -195,25 +196,26 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   background: none;
-  border: 1px solid var(--gold);
-  color: var(--charcoal);
+  border: 1px solid rgba(201, 169, 110, 0.5);
+  color: rgba(255, 255, 255, 0.75);
   padding: 12px 28px;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
   align-self: flex-start;
   margin-top: 8px;
 }
 
 .reserveBtn:hover {
   background: var(--gold);
-  color: var(--warm-white);
+  color: #14120f;
+  border-color: var(--gold);
 }
 
 /* AMENITIES */
 .amenities {
-  background: var(--cream);
+  background: #1c1a16;
   padding: 48px 40px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .amenitiesInner {
@@ -230,12 +232,16 @@
   border: 1px solid var(--border);
 }
 
+.amenityItem {
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
 .amenityTitle {
   font-family: var(--font-body);
   font-size: 0.72rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--charcoal-mid);
+  color: rgba(255, 255, 255, 0.45);
 }
 
 @media (max-width: 1024px) {
