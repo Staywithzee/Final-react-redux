@@ -3,8 +3,8 @@
 A luxury hotel booking SPA built with React + Redux Toolkit.
 
 ## Team Members
-- [Member 1 Name]
-- [Member 2 Name]
+- [Ratchanon Katsakoon]
+- [Photsawee Tantiwattanachaikul]]
 
 ## Live URL
 [https://lumiere-hotel.vercel.app](https://lumiere-hotel.vercel.app)
