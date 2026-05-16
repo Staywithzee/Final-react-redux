@@ -84,6 +84,8 @@ function FormContent({ existingRoom, isEdit }) {
       } else {
         await addRoom(payload).unwrap();
         dispatch(showNotification({ message: 'Room added successfully.', type: 'success' }));
+        setForm(emptyForm);
+        setErrors({});
       }
       navigate(-1);
     } catch (err) {

@@ -214,6 +214,39 @@
   color: #c0826a;
 }
 
+.phoneWrap {
+  display: flex;
+  align-items: center;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  transition: border-color 0.2s;
+}
+
+.phoneWrap:focus-within {
+  border-color: var(--gold);
+}
+
+.phonePrefix {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--charcoal);
+  padding: 12px 10px 12px 14px;
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.phoneInput {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--charcoal);
+  background: transparent;
+  border: none;
+  padding: 12px 14px;
+  outline: none;
+  width: 100%;
+}
+
 .submitBtn {
   font-family: var(--font-body);
   font-size: 0.72rem;

@@ -153,10 +153,10 @@ export default function HomePage() {
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
 
   // Hero parallax background
-  const heroY = useTransform(scrollY, [0, 800], prefersReduced ? [0, 0] : [0, -180]);
+  const heroY = useTransform(scrollY, [0, 800], prefersReduced ? [0, 0] : [0, -260]);
 
   // Giant bg text parallax
-  const heroBgTextY = useTransform(scrollY, [0, 600], prefersReduced ? ['0%', '0%'] : ['0%', '18%']);
+  const heroBgTextY = useTransform(scrollY, [0, 600], prefersReduced ? ['0%', '0%'] : ['0%', '26%']);
 
   // Section view refs
   const featuresRef = useRef(null);
@@ -180,8 +180,28 @@ export default function HomePage() {
   const aboutImgY = useTransform(
     aboutScroll,
     [0, 1],
-    prefersReduced ? ['0%', '0%'] : ['-8%', '8%']
+    prefersReduced ? ['0%', '0%'] : ['-18%', '18%']
   );
+  const aboutImgScale = useTransform(aboutScroll, [0, 0.5], [1.14, 1.0]);
+
+  // Cinematic section parallax
+  const cinematicRef = useRef(null);
+  const { scrollYProgress: cinematicScroll } = useScroll({
+    target: cinematicRef,
+    offset: ['start end', 'end start'],
+  });
+  const cinematicY = useTransform(
+    cinematicScroll,
+    [0, 1],
+    prefersReduced ? [0, 0] : [-130, 130]
+  );
+  const cinematicScale = useTransform(cinematicScroll, [0, 0.5], [1.15, 1.0]);
+  const cinematicTextY = useTransform(
+    cinematicScroll,
+    [0, 1],
+    prefersReduced ? [0, 0] : [80, -80]
+  );
+  const cinematicOpacity = useTransform(cinematicScroll, [0.1, 0.35, 0.65, 0.9], [0, 1, 1, 0]);
 
   const testimonialsRef = useRef(null);
   const testimonialsInView = useInView(testimonialsRef, { once: true, margin: '-60px' });
@@ -442,6 +462,22 @@ export default function HomePage() {
           </motion.div>
         </section>
 
+        {/* ── CINEMATIC DIVIDER ────────────────────────────────────────── */}
+        <section className={styles.cinematicSection} ref={cinematicRef}>
+          <motion.div
+            className={styles.cinematicBg}
+            style={{ y: cinematicY, scale: cinematicScale }}
+          />
+          <div className={styles.cinematicOverlay} />
+          <motion.div
+            className={styles.cinematicLabel}
+            style={{ y: cinematicTextY, opacity: cinematicOpacity }}
+          >
+            <span className={styles.cinematicLine}>A World</span>
+            <span className={styles.cinematicLine}>Apart</span>
+          </motion.div>
+        </section>
+
         {/* ── ABOUT ────────────────────────────────────────────────────── */}
         <section className={styles.about} ref={aboutRef}>
           <div className={styles.aboutGrid}>
@@ -480,7 +516,7 @@ export default function HomePage() {
                   src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800&q=80"
                   alt="Lumière Hotel Interior"
                   className={`${styles.aboutImg} ${styles.parallaxEl}`}
-                  style={{ y: aboutImgY }}
+                  style={{ y: aboutImgY, scale: aboutImgScale }}
                   loading="lazy"
                 />
               </div>
@@ -561,17 +597,13 @@ export default function HomePage() {
         <section className={styles.ctaBanner} ref={ctaRef}>
           {/* Infinite marquee */}
           <div className={styles.marqueeWrap} aria-hidden="true">
-            <motion.div
-              className={styles.marqueeTrack}
-              animate={{ x: ['0%', '-50%'] }}
-              transition={{ duration: 22, ease: 'linear', repeat: Infinity }}
-            >
+            <div className={styles.marqueeTrack}>
               {[...Array(4)].map((_, i) => (
                 <span key={i} className={styles.marqueeText}>
                   {h.marquee}
                 </span>
               ))}
-            </motion.div>
+            </div>
           </div>
 
           <motion.div
