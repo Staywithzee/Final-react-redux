@@ -40,16 +40,16 @@ export default function App() {
       <Navbar />
       <AnimatePresence mode="wait" initial={false} onExitComplete={scrollToTop}>
         <Routes location={location} key={location.pathname}>
-          <Route path="/"                       element={<HomePage />} />
-          <Route path="/rooms"                  element={<RoomsPage />} />
-          <Route path="/rooms/:id"              element={<RoomDetailPage />} />
-          <Route path="/dining"                 element={<DiningPage />} />
-          <Route path="/gallery"                element={<GalleryPage />} />
-          <Route path="/booking"                element={<BookingPage />} />
-          <Route path="/admin"                  element={<AdminPage />} />
-          <Route path="/admin/rooms/new"        element={<RoomFormPage />} />
-          <Route path="/admin/rooms/:id/edit"   element={<RoomFormPage />} />
-          <Route path="*"                       element={<NotFoundPage />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/rooms" element={<RoomsPage />} />
+          <Route path="/rooms/:id" element={<RoomDetailPage />} />
+          <Route path="/dining" element={<DiningPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
+          <Route path="/booking" element={<BookingPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/admin/rooms/new" element={<RoomFormPage />} />
+          <Route path="/admin/rooms/:id/edit" element={<RoomFormPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </AnimatePresence>
       <Footer />

@@ -5,6 +5,7 @@ import { useGetRoomByIdQuery } from './roomsApi';
 import { selectRoom, setDates, setGuests } from '../booking/bookingSlice';
 import { selectTotalNights, selectTotalPrice } from '../booking/bookingSelectors';
 import { useLanguage } from '../../context/LanguageContext';
+import { showNotification } from '../ui/uiSlice';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import { PageWrapper } from '../../components/PageWrapper/PageWrapper';
 import { slideLeft, slideRight, staggerContainer, staggerItem } from '../../utils/transitions';
@@ -37,6 +38,13 @@ export default function RoomDetailPage() {
 
   const handleBook = () => {
     if (!room) return;
+    if (!room.available) {
+      dispatch(showNotification({
+        message: 'This room is currently unavailable. Please contact us or choose another room.',
+        type: 'error',
+      }));
+      return;
+    }
     dispatch(selectRoom(room));
     navigate('/booking');
   };
