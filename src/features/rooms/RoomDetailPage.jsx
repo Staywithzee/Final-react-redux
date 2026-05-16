@@ -233,11 +233,11 @@ export default function RoomDetailPage() {
               <div className={styles.priceBreakdown}>
                 <div className={styles.breakdownRow}>
                   <span>{rd.nightRate(formatPrice(room.pricePerNight))} ({rd.nights(totalNights)})</span>
-                  <span>{formatPrice(totalPrice)}</span>
+                  <span>{formatPrice(room.pricePerNight * totalNights)}</span>
                 </div>
                 <div className={`${styles.breakdownRow} ${styles.breakdownTotal}`}>
                   <span>{t.booking.totalLabel}</span>
-                  <span>{formatPrice(totalPrice)}</span>
+                  <span>{formatPrice(room.pricePerNight * totalNights)}</span>
                 </div>
               </div>
             )}
@@ -245,10 +245,15 @@ export default function RoomDetailPage() {
             <motion.button
               className={styles.bookBtn}
               onClick={handleBook}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              disabled={!room.available || !booking.checkIn || !booking.checkOut}
+              whileHover={room.available && booking.checkIn && booking.checkOut ? { scale: 1.02 } : {}}
+              whileTap={room.available && booking.checkIn && booking.checkOut ? { scale: 0.98 } : {}}
             >
-              {room.available ? rd.bookBtn : rd.unavailBtn}
+              {!room.available
+                ? rd.unavailBtn
+                : !booking.checkIn || !booking.checkOut
+                ? 'Select dates to continue'
+                : rd.bookBtn}
             </motion.button>
 
             <p className={styles.widgetNote}>{rd.taxNote}</p>
